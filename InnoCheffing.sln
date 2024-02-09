@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoCheffing.API", "InnoCheffing.API\InnoCheffing.API.csproj", "{8A0B0087-6D5D-4B52-942E-BC1D93DEFE03}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoCheffing.DAL", "InnoCheffing.DAL\InnoCheffing.DAL.csproj", "{142B9B6B-3B77-43DB-B13A-60267B643619}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8A0B0087-6D5D-4B52-942E-BC1D93DEFE03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A0B0087-6D5D-4B52-942E-BC1D93DEFE03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A0B0087-6D5D-4B52-942E-BC1D93DEFE03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A0B0087-6D5D-4B52-942E-BC1D93DEFE03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{142B9B6B-3B77-43DB-B13A-60267B643619}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{142B9B6B-3B77-43DB-B13A-60267B643619}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{142B9B6B-3B77-43DB-B13A-60267B643619}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{142B9B6B-3B77-43DB-B13A-60267B643619}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6A5128E7-AA13-4307-BCA0-6EB9533B8F4A}
+	EndGlobalSection
+EndGlobal
