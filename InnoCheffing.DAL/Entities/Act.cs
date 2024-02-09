@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InnoCheffing.DAL.Entities;
 
-[Table(nameof(Ingredient))]
-public class Ingredient : EntityBase
+[Table(nameof(Act))]
+public class Act : EntityBase
 {
 }
