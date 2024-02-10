@@ -4,10 +4,25 @@ GET {{InnoCheffing.API_HostAddress}}/api/ingredients/
 Accept: application/json
 ###
 
+GET {{InnoCheffing.API_HostAddress}}/api/ingredients/a1b99f7c-6f81-41dd-a769-f6b3b7b9633d
+Accept: application/json
+###
+
 POST {{InnoCheffing.API_HostAddress}}/api/ingredients/
 Content-Type: application/json
 
 {
   "name": "Potato"
 }
+###
+
+PUT {{InnoCheffing.API_HostAddress}}/api/ingredients/a1b99f7c-6f81-41dd-a769-f6b3b7b9633d
+Content-Type: application/json
+
+{
+  "name": "UPDATED Potato"
+}
+###
+
+DELETE {{InnoCheffing.API_HostAddress}}/api/ingredients/a1b99f7c-6f81-41dd-a769-f6b3b7b9633d
 ###
