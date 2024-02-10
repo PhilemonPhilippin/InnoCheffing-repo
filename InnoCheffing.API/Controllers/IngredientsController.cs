@@ -1,7 +1,9 @@
-﻿using InnoCheffing.DAL.Data;
+﻿using InnoCheffing.API.Contracts;
+using InnoCheffing.DAL.Data;
 using InnoCheffing.DAL.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace InnoCheffing.API.Controllers
 {
@@ -16,22 +18,43 @@ namespace InnoCheffing.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get() 
+        public async Task<ActionResult<IEnumerable<Ingredient>>> Get() 
         {
-            var ingredients = _context.Ingredients.Take(5);
-            if (ingredients.Any())
+            var ingredients = await _context.Ingredients.Take(5).ToListAsync();
+            if (ingredients.Count > 0)
                 return Ok(ingredients);
             else
                 return NotFound();
         }
 
-        [HttpPost]
-        public IActionResult Add()
+        [HttpGet("{id:guid}")]
+        public async Task<ActionResult<Ingredient>> Get(Guid id)
         {
-            var ingredient = new Ingredient { Name = "Tomato" };
+            var ingredient = await _context.Ingredients.FindAsync(id);
+            if (ingredient is null)
+                return NotFound();
+            else
+                return Ok(ingredient);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Ingredient>> Post(IngredientRequest ingredientRequest)
+        {
+            string ingredientName = ingredientRequest.Name;
+
+            if (string.IsNullOrEmpty(ingredientName))
+                return BadRequest($"The {nameof(Ingredient)} name is empty.");
+
+            ingredientName = ingredientName.Trim();
+
+            if (ingredientName.Length > 150)
+                return BadRequest($"The {nameof(Ingredient)} name has more than 150 chars.");
+
+            Ingredient ingredient = new() { Name = ingredientName };
+
             _context.Add(ingredient);
-            _context.SaveChanges();
-            return Ok(ingredient);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(Get), new { id = ingredient.Id }, ingredient);
         }
     }
 }
