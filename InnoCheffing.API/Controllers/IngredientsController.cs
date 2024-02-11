@@ -1,8 +1,7 @@
 ﻿using InnoCheffing.API.Contracts;
-using InnoCheffing.Core.Data;
 using InnoCheffing.Core.Entities;
+using InnoCheffing.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace InnoCheffing.API.Controllers
 {
@@ -10,18 +9,19 @@ namespace InnoCheffing.API.Controllers
     [ApiController]
     public class IngredientsController : ControllerBase
     {
-        protected readonly InnoCheffingContext _context;
-        public IngredientsController(InnoCheffingContext context)
+        private readonly IIngredientRepository _ingredientRepository;
+
+        public IngredientsController(IIngredientRepository ingredientRepository)
         {
-            _context = context;
+            _ingredientRepository = ingredientRepository;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Ingredient>>> Get() 
+        public async Task<ActionResult<IEnumerable<Ingredient>>> Get()
         {
-            var ingredients = await _context.Ingredients.Take(5).ToListAsync();
+            var ingredients = await _ingredientRepository.Read();
 
-            if (ingredients.Count > 0)
+            if (ingredients.Count() > 0)
                 return Ok(ingredients);
             else
                 return NotFound();
@@ -30,7 +30,7 @@ namespace InnoCheffing.API.Controllers
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<Ingredient>> Get(Guid id)
         {
-            var ingredient = await _context.Ingredients.FindAsync(id);
+            var ingredient = await _ingredientRepository.Read(id);
 
             if (ingredient is null)
                 return NotFound();
@@ -41,67 +41,51 @@ namespace InnoCheffing.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Ingredient>> Post(IngredientRequest ingredientRequest)
         {
-            string ingredientName = ingredientRequest.Name;
+            try
+            {
+                Ingredient ingredient = new() { Name = ingredientRequest.Name };
 
-            if (string.IsNullOrEmpty(ingredientName))
-                return BadRequest($"The {nameof(Ingredient)} name is empty.");
+                await _ingredientRepository.Create(ingredient);
 
-            ingredientName = ingredientName.Trim();
-
-            if (ingredientName.Length > 150)
-                return BadRequest($"The {nameof(Ingredient)} name has more than 150 chars.");
-
-            Ingredient ingredient = new() { Name = ingredientName };
-
-            _context.Add(ingredient);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = ingredient.Id }, ingredient);
+                return CreatedAtAction(nameof(Get), new { id = ingredient.Id }, ingredient);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{id:guid}")]
         public async Task<ActionResult> Put(Guid id, IngredientRequest ingredientRequest)
         {
-            var ingredient = await _context.Ingredients.FindAsync(id);
-
-            if (ingredient is null)
+            try
             {
-                return NotFound();
+                Ingredient ingredient = new() { Name = ingredientRequest.Name };
+
+                bool ingredientUpdated = await _ingredientRepository.Update(id, ingredient);
+
+                return ingredientUpdated ? NoContent() : NotFound();
             }
-            else
+            catch (ArgumentOutOfRangeException ex)
             {
-                string ingredientName = ingredientRequest.Name;
-
-                if (string.IsNullOrEmpty(ingredientName))
-                    return BadRequest($"The {nameof(Ingredient)} name is empty.");
-
-                ingredientName = ingredientName.Trim();
-
-                if (ingredientName.Length > 150)
-                    return BadRequest($"The {nameof(Ingredient)} name has more than 150 chars.");
-
-                ingredient.Name = ingredientRequest.Name;
-                ingredient.ModifiedOn = DateTime.UtcNow;
-                await _context.SaveChangesAsync();
-
-                return NoContent();
+                return BadRequest(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var ingredient = await _context.Ingredients.FindAsync(id);
+            bool ingredientDeleted = await _ingredientRepository.Delete(id);
 
-            if (ingredient is null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                _context.Remove(ingredient);
-                await _context.SaveChangesAsync();
-                return NoContent();
-            }
+            return ingredientDeleted ? NoContent() : NotFound();
         }
     }
 }

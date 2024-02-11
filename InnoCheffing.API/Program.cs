@@ -1,4 +1,6 @@
 using InnoCheffing.Core.Data;
+using InnoCheffing.Core.Interfaces;
+using InnoCheffing.Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<InnoCheffingContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
 
 var app = builder.Build();
 
