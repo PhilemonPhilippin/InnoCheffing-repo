@@ -1,7 +1,6 @@
 ﻿using InnoCheffing.API.Contracts;
-using InnoCheffing.DAL.Data;
-using InnoCheffing.DAL.Entities;
-using Microsoft.AspNetCore.Http;
+using InnoCheffing.Core.Data;
+using InnoCheffing.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

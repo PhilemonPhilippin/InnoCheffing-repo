@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace InnoCheffing.DAL.Entities;
+namespace InnoCheffing.Core.Entities;
 
-public class EntityBase
+public class Entity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -13,7 +13,7 @@ public class EntityBase
     public string Name { get; set; }
     public DateTime CreatedOn { get; set; }
     public DateTime ModifiedOn { get; set; }
-    public EntityBase()
+    public Entity()
     {
         CreatedOn = DateTime.UtcNow;
         ModifiedOn = DateTime.UtcNow;

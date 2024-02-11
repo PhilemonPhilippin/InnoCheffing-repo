@@ -1,4 +1,2 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace InnoCheffing.API.Contracts;
+﻿namespace InnoCheffing.API.Contracts;
 public record IngredientRequest(string Name);

@@ -1,4 +1,4 @@
-using InnoCheffing.DAL.Data;
+using InnoCheffing.Core.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\InnoCheffing.DAL\InnoCheffing.DAL.csproj" />
+    <ProjectReference Include="..\InnoCheffing.Core\InnoCheffing.Core.csproj" />
   </ItemGroup>
 
 </Project>
