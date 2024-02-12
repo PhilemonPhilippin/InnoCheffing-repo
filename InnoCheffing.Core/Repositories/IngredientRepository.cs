@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InnoCheffing.Core.Repositories;
 
-public class IngredientRepository(InnoCheffingContext context) : IIngredientRepository
+public class IngredientRepository(InnoCheffingContext context) : Repository, IIngredientRepository
 {
     private readonly InnoCheffingContext _context = context;
 
@@ -60,18 +60,5 @@ public class IngredientRepository(InnoCheffingContext context) : IIngredientRepo
         await _context.SaveChangesAsync();
 
         return true;
-    }
-
-    private static string ValidateName(string ingredientName)
-    {
-        if (string.IsNullOrEmpty(ingredientName))
-            throw new ArgumentException($"The name is empty.", nameof(Ingredient));
-
-        ingredientName = ingredientName.Trim();
-
-        if (ingredientName.Length > 150)
-            throw new ArgumentOutOfRangeException(nameof(Ingredient), "The name has more than 150 characters.");
-
-        return ingredientName;
     }
 }

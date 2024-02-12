@@ -9,14 +9,9 @@ namespace InnoCheffing.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class IngredientsController : ControllerBase
+    public class IngredientsController(IIngredientRepository ingredientRepository) : ControllerBase
     {
-        private readonly IIngredientRepository _ingredientRepository;
-
-        public IngredientsController(IIngredientRepository ingredientRepository)
-        {
-            _ingredientRepository = ingredientRepository;
-        }
+        private readonly IIngredientRepository _ingredientRepository = ingredientRepository;
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Ingredient>>> Get([FromQuery] IngredientParameters ingredientParameters, CancellationToken cancellationToken)
@@ -74,7 +69,7 @@ namespace InnoCheffing.API.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<ActionResult> Put(Guid id, IngredientRequest ingredientRequest)
+        public async Task<IActionResult> Put(Guid id, IngredientRequest ingredientRequest)
         {
             try
             {

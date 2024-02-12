@@ -5,5 +5,4 @@ namespace InnoCheffing.Core.Entities.DataBase;
 [Table(nameof(RecipeCategory))]
 public class RecipeCategory : Entity
 {
-
 }
