@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace InnoCheffing.Core.Entities;
+namespace InnoCheffing.Core.Entities.DataBase;
 
 public class Entity
 {

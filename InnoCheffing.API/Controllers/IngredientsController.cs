@@ -1,7 +1,9 @@
 ﻿using InnoCheffing.API.Contracts;
-using InnoCheffing.Core.Entities;
+using InnoCheffing.Core.Entities.DataBase;
+using InnoCheffing.Core.Entities.Pagination;
 using InnoCheffing.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace InnoCheffing.API.Controllers
 {
@@ -17,11 +19,23 @@ namespace InnoCheffing.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Ingredient>>> Get()
+        public async Task<ActionResult<IEnumerable<Ingredient>>> Get([FromQuery] IngredientParameters ingredientParameters, CancellationToken cancellationToken)
         {
-            var ingredients = await _ingredientRepository.Read();
+            var ingredients = await _ingredientRepository.Read(ingredientParameters, cancellationToken);
 
-            if (ingredients.Count() > 0)
+            var metadata = new
+            {
+                ingredients.TotalCount,
+                ingredients.PageSize,
+                ingredients.CurrentPage,
+                ingredients.TotalPages,
+                ingredients.HasNext,
+                ingredients.HasPrevious
+            };
+
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
+
+            if (ingredients.TotalCount > 0)
                 return Ok(ingredients);
             else
                 return NotFound();

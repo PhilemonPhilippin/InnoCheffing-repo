@@ -1,6 +1,6 @@
 @InnoCheffing.API_HostAddress = https://localhost:7218
 
-GET {{InnoCheffing.API_HostAddress}}/api/ingredients/
+GET {{InnoCheffing.API_HostAddress}}/api/ingredients?pageNumber=2&pageSize=1
 Accept: application/json
 ###
 

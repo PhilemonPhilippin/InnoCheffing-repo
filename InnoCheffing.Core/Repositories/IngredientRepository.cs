@@ -1,5 +1,6 @@
 ﻿using InnoCheffing.Core.Data;
-using InnoCheffing.Core.Entities;
+using InnoCheffing.Core.Entities.DataBase;
+using InnoCheffing.Core.Entities.Pagination;
 using InnoCheffing.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +12,7 @@ public class IngredientRepository(InnoCheffingContext context) : IIngredientRepo
 
     public async Task Create(Ingredient ingredient)
     {
-        string ingredientName = ValidateName(ingredient);
+        string ingredientName = ValidateName(ingredient.Name);
 
         ingredient.Name = ingredientName;
         _context.Add(ingredient);
@@ -30,9 +31,12 @@ public class IngredientRepository(InnoCheffingContext context) : IIngredientRepo
         return true;
     }
 
-    public async Task<IEnumerable<Ingredient>> Read()
+    public async Task<PagedList<Ingredient>> Read(IngredientParameters ingredientParameters, CancellationToken cancellationToken)
     {
-        var ingredients = await _context.Ingredients.Take(5).ToListAsync();
+        var source = _context.Ingredients.AsNoTracking().OrderBy(i => i.Name);
+
+        PagedList<Ingredient> ingredients = await PagedList<Ingredient>.ToPagedList(source, ingredientParameters.PageNumber, ingredientParameters.PageSize);
+
         return ingredients;
     }
     
@@ -49,7 +53,7 @@ public class IngredientRepository(InnoCheffingContext context) : IIngredientRepo
         if (ingredientToUpdate is null)
             return false;
 
-        string ingredientName = ValidateName(ingredient);
+        string ingredientName = ValidateName(ingredient.Name);
 
         ingredientToUpdate.Name = ingredientName;
         ingredientToUpdate.ModifiedOn = DateTime.UtcNow;
@@ -58,10 +62,8 @@ public class IngredientRepository(InnoCheffingContext context) : IIngredientRepo
         return true;
     }
 
-    private static string ValidateName(Ingredient ingredient)
+    private static string ValidateName(string ingredientName)
     {
-        string ingredientName = ingredient.Name;
-
         if (string.IsNullOrEmpty(ingredientName))
             throw new ArgumentException($"The name is empty.", nameof(Ingredient));
 

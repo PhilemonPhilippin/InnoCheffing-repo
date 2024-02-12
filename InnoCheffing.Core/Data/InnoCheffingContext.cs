@@ -1,4 +1,4 @@
-﻿using InnoCheffing.Core.Entities;
+﻿using InnoCheffing.Core.Entities.DataBase;
 using Microsoft.EntityFrameworkCore;
 
 namespace InnoCheffing.Core.Data;
