@@ -2,4 +2,5 @@
 
 public class IngredientParameters : PaginationParameters
 {
+    public override int MaxPageSize { get; init; } = 100;
 }

@@ -1,4 +1,5 @@
 ﻿using InnoCheffing.API.Contracts;
+using InnoCheffing.API.Mappers;
 using InnoCheffing.Core.Entities.DataBase;
 using InnoCheffing.Core.Entities.Pagination;
 using InnoCheffing.Core.Interfaces;
@@ -14,7 +15,7 @@ namespace InnoCheffing.API.Controllers
         private readonly IIngredientRepository _ingredientRepository = ingredientRepository;
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Ingredient>>> Get([FromQuery] IngredientParameters ingredientParameters, CancellationToken cancellationToken)
+        public async Task<ActionResult<IEnumerable<IngredientDto>>> Get([FromQuery] IngredientParameters ingredientParameters, CancellationToken cancellationToken)
         {
             var ingredients = await _ingredientRepository.Read(ingredientParameters, cancellationToken);
 
@@ -30,19 +31,27 @@ namespace InnoCheffing.API.Controllers
 
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
 
-            return ingredients.TotalCount > 0 ? Ok(ingredients) : NotFound();
+            if (ingredients.TotalCount == 0)
+                return NotFound();
+
+            var dtos = ingredients.Select(i => i.MapToIngredientDto());
+
+            return Ok(dtos);
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<ActionResult<Ingredient>> Get(Guid id)
+        public async Task<ActionResult<IngredientDto>> Get(Guid id)
         {
             var ingredient = await _ingredientRepository.Read(id);
 
-            return ingredient is null ? NotFound() : Ok(ingredient);
+            if (ingredient is null)
+                return NotFound();
+
+            return Ok(ingredient.MapToIngredientDto());
         }
 
         [HttpPost]
-        public async Task<ActionResult<Ingredient>> Post(IngredientRequest ingredientRequest)
+        public async Task<ActionResult<IngredientDto>> Post(IngredientRequest ingredientRequest)
         {
             try
             {
@@ -50,7 +59,9 @@ namespace InnoCheffing.API.Controllers
 
                 await _ingredientRepository.Create(ingredient);
 
-                return CreatedAtAction(nameof(Get), new { id = ingredient.Id }, ingredient);
+                var dto = ingredient.MapToIngredientDto();
+
+                return CreatedAtAction(nameof(Get), new { id = ingredient.Id }, dto);
             }
             catch (ArgumentOutOfRangeException ex)
             {

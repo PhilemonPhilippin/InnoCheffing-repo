@@ -1,6 +1,7 @@
 ﻿using InnoCheffing.API.Contracts;
 using InnoCheffing.Core.Entities.DataBase;
 using InnoCheffing.Core.Interfaces;
+using InnoCheffing.API.Mappers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoCheffing.API.Controllers;
@@ -12,26 +13,34 @@ public class RecipeCategoriesController(IRecipeCategoryRepository recipeCategory
     private readonly IRecipeCategoryRepository _recipeCategoryRepository = recipeCategoryRepository;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<RecipeCategory>>> Get()
+    public async Task<ActionResult<IEnumerable<RecipeCategoryDto>>> Get()
     {
         var recipeCategories = await _recipeCategoryRepository.Read();
 
         if (recipeCategories.Any())
-            return Ok(recipeCategories);
+        {
+            var dtos = recipeCategories.Select(rc => rc.MapToCategoryDto());
+            return Ok(dtos);
+        }
         else
+        {
             return NotFound();
+        }
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<RecipeCategory>> Get(Guid id)
+    public async Task<ActionResult<RecipeCategoryDto>> Get(Guid id)
     {
         var category = await _recipeCategoryRepository.Read(id);
 
-        return category is null ? NotFound() : Ok(category);
+        if (category is null)
+            return NotFound();
+
+        return Ok(category.MapToCategoryDto());
     }
 
     [HttpPost]
-    public async Task<ActionResult<RecipeCategory>> Post(RecipeCategoryRequest recipeCategoryRequest)
+    public async Task<ActionResult<RecipeCategoryDto>> Post(RecipeCategoryRequest recipeCategoryRequest)
     {
         try
         {
@@ -39,7 +48,9 @@ public class RecipeCategoriesController(IRecipeCategoryRepository recipeCategory
             
             await _recipeCategoryRepository.Create(category);
 
-            return CreatedAtAction(nameof(Get), new { id = category.Id }, category);
+            var dto = category.MapToCategoryDto();
+
+            return CreatedAtAction(nameof(Get), new { id = category.Id }, dto);
         }
         catch (ArgumentOutOfRangeException ex)
         {

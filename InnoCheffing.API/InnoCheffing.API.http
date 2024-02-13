@@ -1,11 +1,11 @@
 @InnoCheffing.API_HostAddress = https://localhost:7218
 
 
-GET {{InnoCheffing.API_HostAddress}}/api/ingredients?pageNumber=2&pageSize=1
+GET {{InnoCheffing.API_HostAddress}}/api/ingredients?pageNumber=1&pageSize=2
 Accept: application/json
 ###
 
-GET {{InnoCheffing.API_HostAddress}}/api/ingredients/2e1554fe-2f75-4330-baaf-663ad055bc89
+GET {{InnoCheffing.API_HostAddress}}/api/ingredients/e788e571-91ff-4783-9f6d-148a21ea0e88
 Accept: application/json
 ###
 
@@ -13,7 +13,7 @@ POST {{InnoCheffing.API_HostAddress}}/api/ingredients/
 Content-Type: application/json
 
 {
-  "name": "Orange"
+  "name": "Banana"
 }
 ###
 
@@ -32,7 +32,7 @@ GET {{InnoCheffing.API_HostAddress}}/api/recipecategories/
 Accept: application/json
 ###
 
-GET {{InnoCheffing.API_HostAddress}}/api/recipecategories/3c519871-3e05-4bd2-8f33-5ed69451d36f
+GET {{InnoCheffing.API_HostAddress}}/api/recipecategories/c09a7130-b733-49ce-9528-743c2d200046
 Accept: application/json
 ###
 
@@ -41,7 +41,7 @@ POST {{InnoCheffing.API_HostAddress}}/api/recipecategories/
 Content-Type: application/json
 
 {
-  "name": "Breakfast"
+  "name": "Dinner"
 }
 ###
 
