@@ -28,6 +28,7 @@ public class IngredientRepository(InnoCheffingContext context) : Repository, IIn
 
         _context.Remove(ingredient);
         await _context.SaveChangesAsync();
+
         return true;
     }
 
@@ -43,6 +44,7 @@ public class IngredientRepository(InnoCheffingContext context) : Repository, IIn
     public async Task<Ingredient> Read(Guid id)
     {
         var ingredient = await _context.Ingredients.FindAsync(id);
+
         return ingredient;
     }
 

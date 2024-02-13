@@ -32,10 +32,26 @@ GET {{InnoCheffing.API_HostAddress}}/api/recipecategories/
 Accept: application/json
 ###
 
+GET {{InnoCheffing.API_HostAddress}}/api/recipecategories/3c519871-3e05-4bd2-8f33-5ed69451d36f
+Accept: application/json
+###
+
+
 POST {{InnoCheffing.API_HostAddress}}/api/recipecategories/
 Content-Type: application/json
 
 {
-  "name": ""
+  "name": "Breakfast"
 }
+###
+
+PUT {{InnoCheffing.API_HostAddress}}/api/recipecategories/3c519871-3e05-4bd2-8f33-5ed69451d36f
+Content-Type: application/json
+
+{
+  "name": "UPDATED Breakfast"
+}
+###
+
+DELETE {{InnoCheffing.API_HostAddress}}/api/recipecategories/197ad14e-70b3-41e1-a674-cc74cab5249a
 ###

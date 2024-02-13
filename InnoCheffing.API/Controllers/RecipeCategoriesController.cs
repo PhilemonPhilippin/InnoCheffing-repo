@@ -22,6 +22,14 @@ public class RecipeCategoriesController(IRecipeCategoryRepository recipeCategory
             return NotFound();
     }
 
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<RecipeCategory>> Get(Guid id)
+    {
+        var category = await _recipeCategoryRepository.Read(id);
+
+        return category is null ? NotFound() : Ok(category);
+    }
+
     [HttpPost]
     public async Task<ActionResult<RecipeCategory>> Post(RecipeCategoryRequest recipeCategoryRequest)
     {
@@ -41,5 +49,34 @@ public class RecipeCategoriesController(IRecipeCategoryRepository recipeCategory
         {
             return BadRequest(ex.Message);
         }
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Put(Guid id, RecipeCategoryRequest categoryRequest)
+    {
+        try
+        {
+            RecipeCategory category = new() { Name =  categoryRequest.Name };
+
+            bool categoryUpdated = await _recipeCategoryRepository.Update(id, category);
+
+            return categoryUpdated ? NoContent() : NotFound();
+        }
+        catch (ArgumentOutOfRangeException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        bool categoryDeleted = await _recipeCategoryRepository.Delete(id);
+
+        return categoryDeleted ? NoContent() : NotFound();
     }
 }

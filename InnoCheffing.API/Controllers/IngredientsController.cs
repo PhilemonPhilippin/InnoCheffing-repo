@@ -30,10 +30,7 @@ namespace InnoCheffing.API.Controllers
 
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
 
-            if (ingredients.TotalCount > 0)
-                return Ok(ingredients);
-            else
-                return NotFound();
+            return ingredients.TotalCount > 0 ? Ok(ingredients) : NotFound();
         }
 
         [HttpGet("{id:guid}")]
@@ -41,10 +38,7 @@ namespace InnoCheffing.API.Controllers
         {
             var ingredient = await _ingredientRepository.Read(id);
 
-            if (ingredient is null)
-                return NotFound();
-            else
-                return Ok(ingredient);
+            return ingredient is null ? NotFound() : Ok(ingredient);
         }
 
         [HttpPost]
