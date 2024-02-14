@@ -6,10 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InnoCheffing.Core.Repositories;
 
-public class IngredientRepository(InnoCheffingContext context) : Repository, IIngredientRepository
+public class IngredientRepository(InnoCheffingContext context) : Repository(context), IIngredientRepository
 {
-    private readonly InnoCheffingContext _context = context;
-
     public async Task Create(Ingredient ingredient)
     {
         string ingredientName = ValidateName(ingredient.Name);
@@ -34,7 +32,7 @@ public class IngredientRepository(InnoCheffingContext context) : Repository, IIn
 
     public async Task<PagedList<Ingredient>> Read(IngredientParameters ingredientParameters, CancellationToken cancellationToken)
     {
-        var source = _context.Ingredients.AsNoTracking().OrderBy(i => i.Name);
+        IQueryable<Ingredient> source = _context.Ingredients.AsNoTracking().OrderBy(i => i.Name);
 
         PagedList<Ingredient> ingredients = await PagedList<Ingredient>.ToPagedList(source, ingredientParameters.PageNumber, ingredientParameters.PageSize);
 

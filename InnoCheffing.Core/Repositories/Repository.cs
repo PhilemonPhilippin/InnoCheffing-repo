@@ -1,10 +1,12 @@
-﻿using InnoCheffing.Core.Entities.DataBase;
+﻿using InnoCheffing.Core.Data;
+using InnoCheffing.Core.Entities.DataBase;
 
 namespace InnoCheffing.Core.Repositories;
 
-public abstract class Repository
+public abstract class Repository(InnoCheffingContext context)
 {
-    public static string ValidateName(string name)
+    internal readonly InnoCheffingContext _context = context;
+    internal static string ValidateName(string name)
     {
         if (string.IsNullOrEmpty(name))
             throw new ArgumentException("The name must not be empty.", nameof(name));

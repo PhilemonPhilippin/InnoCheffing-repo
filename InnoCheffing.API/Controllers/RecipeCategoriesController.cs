@@ -15,7 +15,7 @@ public class RecipeCategoriesController(IRecipeCategoryRepository recipeCategory
     [HttpGet]
     public async Task<ActionResult<IEnumerable<RecipeCategoryDto>>> Get()
     {
-        var recipeCategories = await _recipeCategoryRepository.Read();
+        IEnumerable<RecipeCategory> recipeCategories = await _recipeCategoryRepository.Read();
 
         if (recipeCategories.Any())
         {
@@ -31,7 +31,7 @@ public class RecipeCategoriesController(IRecipeCategoryRepository recipeCategory
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<RecipeCategoryDto>> Get(Guid id)
     {
-        var category = await _recipeCategoryRepository.Read(id);
+        RecipeCategory? category = await _recipeCategoryRepository.Read(id);
 
         if (category is null)
             return NotFound();

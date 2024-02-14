@@ -6,9 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InnoCheffing.Core.Repositories;
 
-public class RecipeCategoryRepository(InnoCheffingContext context) : Repository, IRecipeCategoryRepository
+public class RecipeCategoryRepository(InnoCheffingContext context) : Repository(context), IRecipeCategoryRepository
 {
-    private readonly InnoCheffingContext _context = context;
     public async Task Create(RecipeCategory category)
     {
         string recipeCategoryName = ValidateName(category.Name);

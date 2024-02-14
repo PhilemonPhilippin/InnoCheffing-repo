@@ -15,6 +15,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<InnoCheffingContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
 builder.Services.AddScoped<IRecipeCategoryRepository, RecipeCategoryRepository>();
+builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 
 
 var app = builder.Build();

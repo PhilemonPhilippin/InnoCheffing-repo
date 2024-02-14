@@ -6,100 +6,99 @@ using InnoCheffing.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
-namespace InnoCheffing.API.Controllers
+namespace InnoCheffing.API.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class IngredientsController(IIngredientRepository ingredientRepository) : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class IngredientsController(IIngredientRepository ingredientRepository) : ControllerBase
+    private readonly IIngredientRepository _ingredientRepository = ingredientRepository;
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<IngredientDto>>> Get([FromQuery] IngredientParameters ingredientParameters, CancellationToken cancellationToken)
     {
-        private readonly IIngredientRepository _ingredientRepository = ingredientRepository;
+        PagedList<Ingredient> ingredients = await _ingredientRepository.Read(ingredientParameters, cancellationToken);
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<IngredientDto>>> Get([FromQuery] IngredientParameters ingredientParameters, CancellationToken cancellationToken)
+        var metadata = new
         {
-            var ingredients = await _ingredientRepository.Read(ingredientParameters, cancellationToken);
+            ingredients.TotalCount,
+            ingredients.PageSize,
+            ingredients.CurrentPage,
+            ingredients.TotalPages,
+            ingredients.HasNext,
+            ingredients.HasPrevious
+        };
 
-            var metadata = new
-            {
-                ingredients.TotalCount,
-                ingredients.PageSize,
-                ingredients.CurrentPage,
-                ingredients.TotalPages,
-                ingredients.HasNext,
-                ingredients.HasPrevious
-            };
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
 
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
+        if (ingredients.TotalCount == 0)
+            return NotFound();
 
-            if (ingredients.TotalCount == 0)
-                return NotFound();
+        var dtos = ingredients.Select(i => i.MapToIngredientDto());
 
-            var dtos = ingredients.Select(i => i.MapToIngredientDto());
+        return Ok(dtos);
+    }
 
-            return Ok(dtos);
-        }
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<IngredientDto>> Get(Guid id)
+    {
+        Ingredient? ingredient = await _ingredientRepository.Read(id);
 
-        [HttpGet("{id:guid}")]
-        public async Task<ActionResult<IngredientDto>> Get(Guid id)
+        if (ingredient is null)
+            return NotFound();
+
+        return Ok(ingredient.MapToIngredientDto());
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<IngredientDto>> Post(IngredientRequest ingredientRequest)
+    {
+        try
         {
-            var ingredient = await _ingredientRepository.Read(id);
+            Ingredient ingredient = new() { Name = ingredientRequest.Name };
 
-            if (ingredient is null)
-                return NotFound();
+            await _ingredientRepository.Create(ingredient);
 
-            return Ok(ingredient.MapToIngredientDto());
+            var dto = ingredient.MapToIngredientDto();
+
+            return CreatedAtAction(nameof(Get), new { id = ingredient.Id }, dto);
         }
-
-        [HttpPost]
-        public async Task<ActionResult<IngredientDto>> Post(IngredientRequest ingredientRequest)
+        catch (ArgumentOutOfRangeException ex)
         {
-            try
-            {
-                Ingredient ingredient = new() { Name = ingredientRequest.Name };
-
-                await _ingredientRepository.Create(ingredient);
-
-                var dto = ingredient.MapToIngredientDto();
-
-                return CreatedAtAction(nameof(Get), new { id = ingredient.Id }, dto);
-            }
-            catch (ArgumentOutOfRangeException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return BadRequest(ex.Message);
         }
-
-        [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Put(Guid id, IngredientRequest ingredientRequest)
+        catch (ArgumentException ex)
         {
-            try
-            {
-                Ingredient ingredient = new() { Name = ingredientRequest.Name };
-
-                bool ingredientUpdated = await _ingredientRepository.Update(id, ingredient);
-
-                return ingredientUpdated ? NoContent() : NotFound();
-            }
-            catch (ArgumentOutOfRangeException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return BadRequest(ex.Message);
         }
+    }
 
-        [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Delete(Guid id)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Put(Guid id, IngredientRequest ingredientRequest)
+    {
+        try
         {
-            bool ingredientDeleted = await _ingredientRepository.Delete(id);
+            Ingredient ingredient = new() { Name = ingredientRequest.Name };
 
-            return ingredientDeleted ? NoContent() : NotFound();
+            bool ingredientUpdated = await _ingredientRepository.Update(id, ingredient);
+
+            return ingredientUpdated ? NoContent() : NotFound();
         }
+        catch (ArgumentOutOfRangeException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        bool ingredientDeleted = await _ingredientRepository.Delete(id);
+
+        return ingredientDeleted ? NoContent() : NotFound();
     }
 }

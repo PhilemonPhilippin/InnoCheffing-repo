@@ -55,3 +55,22 @@ Content-Type: application/json
 
 DELETE {{InnoCheffing.API_HostAddress}}/api/recipecategories/197ad14e-70b3-41e1-a674-cc74cab5249a
 ###
+
+
+GET {{InnoCheffing.API_HostAddress}}/api/recipes/?pageNumber=1&pageSize=1
+Accept: application/json
+###
+
+GET {{InnoCheffing.API_HostAddress}}/api/recipes/209c7343-6c0e-49c9-8c14-1decb4fc35fb
+Accept: application/json
+###
+
+POST {{InnoCheffing.API_HostAddress}}/api/recipes/
+Content-Type: application/json
+
+{
+  "name": "Spaghetti 3",
+  "description": "This is mom's spaghetti 3",
+  "recipeCategoryId": "c09a7130-b733-49ce-9528-743c2d200046"
+}
+###
