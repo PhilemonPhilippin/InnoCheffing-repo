@@ -29,12 +29,16 @@ public class RecipesController(IRecipeRepository recipeRepository) : ControllerB
             recipes.HasPrevious
         };
 
-        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
+        Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(metadata));
+
 
         if (recipes.TotalCount == 0)
             return NotFound();
 
-        var dtos = recipes.Select(r => r.MapToRecipeDto());
+        if (parameters.PageNumber > recipes.TotalPages)
+            return NotFound("This page number does not exist.");
+
+        IEnumerable<RecipeDto> dtos = recipes.Select(r => r.MapToRecipeDto());
 
         return Ok(dtos);
     }
@@ -43,7 +47,7 @@ public class RecipesController(IRecipeRepository recipeRepository) : ControllerB
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<RecipeDto>> Get(Guid id)
     {
-        var recipe = await _recipeRepository.Read(id);
+        Recipe? recipe = await _recipeRepository.Read(id);
 
         if (recipe is null)
             return NotFound();
@@ -56,11 +60,11 @@ public class RecipesController(IRecipeRepository recipeRepository) : ControllerB
     {
         try
         {
-            Recipe recipe = new() { Name = recipeRequest.Name, Description = recipeRequest.Description , RecipeCategoryId = recipeRequest.RecipeCategoryId};
+            Recipe recipe = recipeRequest.MapToRecipe();
 
             await _recipeRepository.Create(recipe);
 
-            var dto = recipe.MapToRecipeDto();
+            RecipeDto dto = recipe.MapToRecipeDto();
 
             return CreatedAtAction(nameof(Get), new { id = recipe.Id }, dto);
         }
@@ -72,5 +76,34 @@ public class RecipesController(IRecipeRepository recipeRepository) : ControllerB
         {
             return BadRequest(ex.Message);
         }
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Put(Guid id, RecipeRequest recipeRequest)
+    {
+        try
+        {
+            Recipe recipe = recipeRequest.MapToRecipe();
+
+            bool recipeUpdated = await _recipeRepository.Update(id, recipe);
+
+            return recipeUpdated ? NoContent() : NotFound();
+        }
+        catch (ArgumentOutOfRangeException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        bool recipeDeleted = await _recipeRepository.Delete(id);
+
+        return recipeDeleted ? NoContent() : NotFound();
     }
 }

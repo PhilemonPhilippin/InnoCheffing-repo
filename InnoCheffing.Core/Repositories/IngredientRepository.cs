@@ -19,7 +19,7 @@ public class IngredientRepository(InnoCheffingContext context) : Repository(cont
 
     public async Task<bool> Delete(Guid id)
     {
-        var ingredient = await _context.Ingredients.FindAsync(id);
+        Ingredient? ingredient = await _context.Ingredients.FindAsync(id);
 
         if (ingredient is null)
             return false;
@@ -39,16 +39,16 @@ public class IngredientRepository(InnoCheffingContext context) : Repository(cont
         return ingredients;
     }
     
-    public async Task<Ingredient> Read(Guid id)
+    public async Task<Ingredient?> Read(Guid id)
     {
-        var ingredient = await _context.Ingredients.FindAsync(id);
+        Ingredient? ingredient = await _context.Ingredients.FindAsync(id);
 
         return ingredient;
     }
 
     public async Task<bool> Update(Guid id, Ingredient ingredient)
     {
-        var ingredientToUpdate = await _context.Ingredients.FindAsync(id);
+        Ingredient? ingredientToUpdate = await _context.Ingredients.FindAsync(id);
 
         if (ingredientToUpdate is null)
             return false;

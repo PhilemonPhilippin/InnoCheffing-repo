@@ -19,7 +19,7 @@ public class RecipeCategoriesController(IRecipeCategoryRepository recipeCategory
 
         if (recipeCategories.Any())
         {
-            var dtos = recipeCategories.Select(rc => rc.MapToCategoryDto());
+            IEnumerable<RecipeCategoryDto> dtos = recipeCategories.Select(rc => rc.MapToCategoryDto());
             return Ok(dtos);
         }
         else
@@ -48,7 +48,7 @@ public class RecipeCategoriesController(IRecipeCategoryRepository recipeCategory
             
             await _recipeCategoryRepository.Create(category);
 
-            var dto = category.MapToCategoryDto();
+            RecipeCategoryDto dto = category.MapToCategoryDto();
 
             return CreatedAtAction(nameof(Get), new { id = category.Id }, dto);
         }

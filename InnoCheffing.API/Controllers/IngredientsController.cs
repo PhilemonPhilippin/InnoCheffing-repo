@@ -29,12 +29,15 @@ public class IngredientsController(IIngredientRepository ingredientRepository) :
             ingredients.HasPrevious
         };
 
-        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
+        Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(metadata));
 
         if (ingredients.TotalCount == 0)
             return NotFound();
 
-        var dtos = ingredients.Select(i => i.MapToIngredientDto());
+        if (ingredientParameters.PageNumber > ingredients.TotalPages)
+            return NotFound("This page number does not exist.");
+
+        IEnumerable<IngredientDto> dtos = ingredients.Select(i => i.MapToIngredientDto());
 
         return Ok(dtos);
     }
@@ -59,7 +62,7 @@ public class IngredientsController(IIngredientRepository ingredientRepository) :
 
             await _ingredientRepository.Create(ingredient);
 
-            var dto = ingredient.MapToIngredientDto();
+            IngredientDto dto = ingredient.MapToIngredientDto();
 
             return CreatedAtAction(nameof(Get), new { id = ingredient.Id }, dto);
         }

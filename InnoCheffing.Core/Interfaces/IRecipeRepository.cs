@@ -6,6 +6,8 @@ namespace InnoCheffing.Core.Interfaces;
 public interface IRecipeRepository
 {
     Task<PagedList<Recipe>> Read(RecipeParameters parameters, CancellationToken cancellationToken);
-    Task<Recipe> Read(Guid id);
+    Task<Recipe?> Read(Guid id);
     Task Create(Recipe recipe);
+    Task<bool> Update(Guid id, Recipe recipe);
+    Task<bool> Delete(Guid id);
 }

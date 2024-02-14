@@ -19,7 +19,7 @@ public class RecipeCategoryRepository(InnoCheffingContext context) : Repository(
 
     public async Task<bool> Delete(Guid id)
     {
-        var category = await _context.RecipeCategories.FindAsync(id);
+        RecipeCategory? category = await _context.RecipeCategories.FindAsync(id);
 
         if (category is null)
             return false;
@@ -32,23 +32,23 @@ public class RecipeCategoryRepository(InnoCheffingContext context) : Repository(
 
     public async Task<IEnumerable<RecipeCategory>> Read()
     {
-        var ingredients = await _context.RecipeCategories.AsNoTracking()
+        List<RecipeCategory> ingredients = await _context.RecipeCategories.AsNoTracking()
             .OrderBy(rc => rc.Name)
             .ToListAsync();
 
         return ingredients;
     }
 
-    public async Task<RecipeCategory> Read(Guid id)
+    public async Task<RecipeCategory?> Read(Guid id)
     {
-        var category = await _context.RecipeCategories.FindAsync(id);
+        RecipeCategory? category = await _context.RecipeCategories.FindAsync(id);
 
         return category;
     }
 
     public async Task<bool> Update(Guid id, RecipeCategory category)
     {
-        var categoryToUpdate = await _context.RecipeCategories.FindAsync(id);
+        RecipeCategory? categoryToUpdate = await _context.RecipeCategories.FindAsync(id);
 
         if (categoryToUpdate is null) 
             return false;

@@ -12,6 +12,7 @@ public class RecipeRepository(InnoCheffingContext context) : Repository(context)
     {
         string recipeName = ValidateName(recipe.Name);
         string? description = ValidateDescription(recipe.Description);
+        await ValidateRecipeCategoryId(recipe.RecipeCategoryId);
 
         recipe.Name = recipeName;
         recipe.Description = description;
@@ -20,9 +21,9 @@ public class RecipeRepository(InnoCheffingContext context) : Repository(context)
         await _context.SaveChangesAsync();
     }
 
-    public async Task<Recipe> Read(Guid id)
+    public async Task<Recipe?> Read(Guid id)
     {
-        var recipe = await _context.Recipes.FindAsync(id);
+        Recipe? recipe = await _context.Recipes.FindAsync(id);
 
         return recipe;
     }
@@ -34,6 +35,39 @@ public class RecipeRepository(InnoCheffingContext context) : Repository(context)
         PagedList<Recipe> recipes = await PagedList<Recipe>.ToPagedList(source, parameters.PageNumber, parameters.PageSize);
 
         return recipes;
+    }
+
+    public async Task<bool> Update(Guid id, Recipe recipe)
+    {
+        Recipe? recipeToUpdate = await _context.Recipes.FindAsync(id);
+
+        if (recipeToUpdate is null)
+            return false;
+
+        string recipeName = ValidateName(recipe.Name);
+        string? description = ValidateDescription(recipe.Description);
+        await ValidateRecipeCategoryId(recipe.RecipeCategoryId);
+
+        recipeToUpdate.Name = recipeName;
+        recipeToUpdate.Description = description;
+        recipeToUpdate.RecipeCategoryId = recipe.RecipeCategoryId;
+        recipeToUpdate.ModifiedOn = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
+    public async Task<bool> Delete(Guid id)
+    {
+        Recipe? recipe = await _context.Recipes.FindAsync(id);
+
+        if (recipe is null)
+            return false;
+
+        _context.Remove(recipe);
+        await _context.SaveChangesAsync();
+
+        return true;
     }
     private static string? ValidateDescription(string? description)
     {
@@ -48,4 +82,11 @@ public class RecipeRepository(InnoCheffingContext context) : Repository(context)
         return description;
     }
 
+    private async Task ValidateRecipeCategoryId(Guid recipeCategoryId)
+    {
+        RecipeCategory? recipeCategory = await _context.RecipeCategories.FindAsync(recipeCategoryId);
+
+        if (recipeCategory is null)
+            throw new ArgumentOutOfRangeException(nameof(recipeCategoryId), "The recipe category id does not exist.");
+    }
 }
