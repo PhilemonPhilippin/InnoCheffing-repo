@@ -1,7 +1,7 @@
 @InnoCheffing.API_HostAddress = https://localhost:7218
 
 
-GET {{InnoCheffing.API_HostAddress}}/api/ingredients?pageNumber=5&pageSize=1
+GET {{InnoCheffing.API_HostAddress}}/api/ingredients?pageNumber=1&pageSize=10
 Accept: application/json
 ###
 
@@ -13,7 +13,7 @@ POST {{InnoCheffing.API_HostAddress}}/api/ingredients/
 Content-Type: application/json
 
 {
-  "name": "Banana"
+  "name": "Boar"
 }
 ###
 
@@ -57,7 +57,7 @@ DELETE {{InnoCheffing.API_HostAddress}}/api/recipecategories/197ad14e-70b3-41e1-
 ###
 
 
-GET {{InnoCheffing.API_HostAddress}}/api/recipes/?pageNumber=1&pageSize=3
+GET {{InnoCheffing.API_HostAddress}}/api/recipes/?pageNumber=1&pageSize=0
 Accept: application/json
 ###
 

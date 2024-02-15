@@ -2,8 +2,20 @@
 
 public abstract class PaginationParameters
 {
-    public int PageNumber { get; set; } = 1;
     public virtual int MaxPageSize { get; init; } = 50;
+
+    private int _pageNumber = 1;
+    public int PageNumber
+    {
+        get
+        {
+            return _pageNumber;
+        }
+        set
+        {
+            _pageNumber = value < 1 ? 1 : value;
+        }
+    }
     private int _pageSize = 10;
     public int PageSize
     {
@@ -13,7 +25,12 @@ public abstract class PaginationParameters
         }
         set
         {
-            _pageSize = value > MaxPageSize ? MaxPageSize : value;
+            if (value > MaxPageSize)
+                _pageSize = MaxPageSize;
+            else if (value <= 0)
+                _pageSize = 10;
+            else
+                _pageSize = value;
         }
     }
 }
