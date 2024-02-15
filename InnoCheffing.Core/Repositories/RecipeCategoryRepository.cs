@@ -1,6 +1,7 @@
 ﻿
 using InnoCheffing.Core.Data;
 using InnoCheffing.Core.Entities.DataBase;
+using InnoCheffing.Core.Entities.Pagination;
 using InnoCheffing.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,13 +31,13 @@ public class RecipeCategoryRepository(InnoCheffingContext context) : Repository(
         return true;
     }
 
-    public async Task<IEnumerable<RecipeCategory>> Read()
+    public async Task<PagedList<RecipeCategory>> Read(RecipeCategoryParameters parameters, CancellationToken cancellationToken)
     {
-        List<RecipeCategory> ingredients = await _context.RecipeCategories.AsNoTracking()
-            .OrderBy(rc => rc.Name)
-            .ToListAsync();
+        IQueryable<RecipeCategory> source = _context.RecipeCategories.AsNoTracking().OrderBy(rc => rc.Name);
 
-        return ingredients;
+        PagedList<RecipeCategory> categories = await PagedList<RecipeCategory>.ToPagedList(source, parameters.PageNumber, parameters.PageSize);
+
+        return categories;
     }
 
     public async Task<RecipeCategory?> Read(Guid id)

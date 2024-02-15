@@ -3,6 +3,8 @@ using InnoCheffing.Core.Entities.DataBase;
 using InnoCheffing.Core.Interfaces;
 using InnoCheffing.API.Mappers;
 using Microsoft.AspNetCore.Mvc;
+using InnoCheffing.Core.Entities.Pagination;
+using System.Text.Json;
 
 namespace InnoCheffing.API.Controllers;
 
@@ -13,19 +15,31 @@ public class RecipeCategoriesController(IRecipeCategoryRepository recipeCategory
     private readonly IRecipeCategoryRepository _recipeCategoryRepository = recipeCategoryRepository;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<RecipeCategoryDto>>> Get()
+    public async Task<ActionResult<IEnumerable<RecipeCategoryDto>>> Get([FromQuery] RecipeCategoryParameters parameters, CancellationToken cancellationToken)
     {
-        IEnumerable<RecipeCategory> recipeCategories = await _recipeCategoryRepository.Read();
+        PagedList<RecipeCategory> categories = await _recipeCategoryRepository.Read(parameters, cancellationToken);
 
-        if (recipeCategories.Any())
+        var metadata = new
         {
-            IEnumerable<RecipeCategoryDto> dtos = recipeCategories.Select(rc => rc.MapToCategoryDto());
-            return Ok(dtos);
-        }
-        else
-        {
+            categories.TotalCount,
+            categories.PageSize,
+            categories.CurrentPage,
+            categories.TotalPages,
+            categories.HasNext,
+            categories.HasPrevious
+        };
+
+        Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(metadata));
+
+        if (categories.TotalCount == 0)
             return NotFound();
-        }
+
+        if (parameters.PageNumber > categories.TotalPages)
+            return NotFound("This page number does not exist.");
+           
+        IEnumerable<RecipeCategoryDto> dtos = categories.Select(rc => rc.MapToCategoryDto());
+
+        return Ok(dtos);
     }
 
     [HttpGet("{id:guid}")]
