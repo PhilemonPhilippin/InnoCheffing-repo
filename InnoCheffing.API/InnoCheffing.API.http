@@ -1,11 +1,11 @@
 @InnoCheffing.API_HostAddress = https://localhost:7218
 
 
-GET {{InnoCheffing.API_HostAddress}}/api/ingredients?pageNumber=1&pageSize=10
+GET {{InnoCheffing.API_HostAddress}}/api/ingredients/?pageNumber=1&pageSize=20
 Accept: application/json
 ###
 
-GET {{InnoCheffing.API_HostAddress}}/api/ingredients/e788e571-91ff-4783-9f6d-148a21ea0e88
+GET {{InnoCheffing.API_HostAddress}}/api/ingredients/ed5a9e35-d6fb-4b17-b140-6863aad057ef
 Accept: application/json
 ###
 
@@ -13,19 +13,18 @@ POST {{InnoCheffing.API_HostAddress}}/api/ingredients/
 Content-Type: application/json
 
 {
-  "name": "Boar"
+  "name": ""
 }
 ###
 
-PUT {{InnoCheffing.API_HostAddress}}/api/ingredients/2e1554fe-2f75-4330-baaf-663ad055bc89
+PUT {{InnoCheffing.API_HostAddress}}/api/ingredients/ed5a9e35-d6fb-4b17-b140-6863aad057ef
 Content-Type: application/json
 
 {
-  "name": "UPDATED Orange"
 }
 ###
 
-DELETE {{InnoCheffing.API_HostAddress}}/api/ingredients/2e1554fe-2f75-4330-baaf-663ad055bc89
+DELETE {{InnoCheffing.API_HostAddress}}/api/ingredients/ed5a9e35-d6fb-4b17-b140-6863aad057ef
 ###
 
 GET {{InnoCheffing.API_HostAddress}}/api/recipecategories/
@@ -69,9 +68,8 @@ POST {{InnoCheffing.API_HostAddress}}/api/recipes/
 Content-Type: application/json
 
 {
-  "name": "Spaghetti 3",
-  "description": "This is mom's spaghetti 3",
-  "recipeCategoryId": "c09a7130-b733-49ce-9528-743c2d200046"
+  "name": "test",
+  "recipeCategoryId": "70b1fcc8-88fc-41b0-a490-06d01885"
 }
 ###
 
@@ -79,10 +77,9 @@ PUT {{InnoCheffing.API_HostAddress}}/api/recipes/70b1fcc8-88fc-41b0-a490-06d0188
 Content-Type: application/json
 
 {
-  "name": "UPDATED 2 Spaghetti 3",
-  "recipeCategoryId": "c09a7130-b733-49ce-9528-743c2d200046"
+  "name": "UPDATED 3 Spaghetti 3",
 }
 ###
 
-DELETE {{InnoCheffing.API_HostAddress}}/api/recipes/70b1fcc8-88fc-41b0-a490-06d018854d7b
+DELETE {{InnoCheffing.API_HostAddress}}/api/recipes/
 ###
