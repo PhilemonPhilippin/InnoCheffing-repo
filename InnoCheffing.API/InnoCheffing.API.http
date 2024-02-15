@@ -1,11 +1,11 @@
 @InnoCheffing.API_HostAddress = https://localhost:7218
 
 
-GET {{InnoCheffing.API_HostAddress}}/api/ingredients/?pageNumber=1&pageSize=20
+GET {{InnoCheffing.API_HostAddress}}/api/ingredients/?pageNumber=1&pageSize=10
 Accept: application/json
 ###
 
-GET {{InnoCheffing.API_HostAddress}}/api/ingredients/ed5a9e35-d6fb-4b17-b140-6863aad057ef
+GET {{InnoCheffing.API_HostAddress}}/api/ingredients/8cdc374c-122b-49b9-943e-acc09499f99e
 Accept: application/json
 ###
 
@@ -13,25 +13,26 @@ POST {{InnoCheffing.API_HostAddress}}/api/ingredients/
 Content-Type: application/json
 
 {
-  "name": ""
+  "name": "Porky"
 }
 ###
 
-PUT {{InnoCheffing.API_HostAddress}}/api/ingredients/ed5a9e35-d6fb-4b17-b140-6863aad057ef
+PUT {{InnoCheffing.API_HostAddress}}/api/ingredients/8cdc374c-122b-49b9-943e-acc09499f99e
 Content-Type: application/json
 
 {
+  "name": "UPDATED Porky"
 }
 ###
 
-DELETE {{InnoCheffing.API_HostAddress}}/api/ingredients/ed5a9e35-d6fb-4b17-b140-6863aad057ef
+DELETE {{InnoCheffing.API_HostAddress}}/api/ingredients/4febdd0a-ad68-4e2d-8d02-ca456164f15f
 ###
 
-GET {{InnoCheffing.API_HostAddress}}/api/recipecategories/
+GET {{InnoCheffing.API_HostAddress}}/api/recipecategories/?pageNumber=1&pageSize=10
 Accept: application/json
 ###
 
-GET {{InnoCheffing.API_HostAddress}}/api/recipecategories/c09a7130-b733-49ce-9528-743c2d200046
+GET {{InnoCheffing.API_HostAddress}}/api/recipecategories/89aa66ad-cbd8-44e3-8bcd-a179005df257
 Accept: application/json
 ###
 
@@ -40,19 +41,19 @@ POST {{InnoCheffing.API_HostAddress}}/api/recipecategories/
 Content-Type: application/json
 
 {
-  "name": "Dinner"
+  "name": "Club Breakfast"
 }
 ###
 
-PUT {{InnoCheffing.API_HostAddress}}/api/recipecategories/3c519871-3e05-4bd2-8f33-5ed69451d36f
+PUT {{InnoCheffing.API_HostAddress}}/api/recipecategories/89aa66ad-cbd8-44e3-8bcd-a179005df257
 Content-Type: application/json
 
 {
-  "name": "UPDATED Breakfast"
+  "name": "UPDATED Club Breakfast"
 }
 ###
 
-DELETE {{InnoCheffing.API_HostAddress}}/api/recipecategories/197ad14e-70b3-41e1-a674-cc74cab5249a
+DELETE {{InnoCheffing.API_HostAddress}}/api/recipecategories/12
 ###
 
 
@@ -60,7 +61,7 @@ GET {{InnoCheffing.API_HostAddress}}/api/recipes/?pageNumber=1&pageSize=0
 Accept: application/json
 ###
 
-GET {{InnoCheffing.API_HostAddress}}/api/recipes/70b1fcc8-88fc-41b0-a490-06d018854d7b
+GET {{InnoCheffing.API_HostAddress}}/api/recipes/a1e0d6b7-52e7-4273-8128-552a9cecc27f
 Accept: application/json
 ###
 
@@ -68,18 +69,19 @@ POST {{InnoCheffing.API_HostAddress}}/api/recipes/
 Content-Type: application/json
 
 {
-  "name": "test",
-  "recipeCategoryId": "70b1fcc8-88fc-41b0-a490-06d01885"
+  "name": "test 2",
+  "recipeCategoryId": "c09a7130-b733-49ce-9528-743c2d200046"
 }
 ###
 
-PUT {{InnoCheffing.API_HostAddress}}/api/recipes/70b1fcc8-88fc-41b0-a490-06d018854d7b
+PUT {{InnoCheffing.API_HostAddress}}/api/recipes/a1e0d6b7-52e7-4273-8128-552a9cecc27f
 Content-Type: application/json
 
 {
-  "name": "UPDATED 3 Spaghetti 3",
+  "name": "UPDATED TEST",
+  "recipeCategoryId": "c09a7130-b733-49ce-9528-743c2d200046"
 }
 ###
 
-DELETE {{InnoCheffing.API_HostAddress}}/api/recipes/
+DELETE {{InnoCheffing.API_HostAddress}}/api/recipes/a1e0d6b7-52e7-4273-8128-552a9cecc27f
 ###

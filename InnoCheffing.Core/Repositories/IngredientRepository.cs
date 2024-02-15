@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InnoCheffing.Core.Repositories;
 
-public class IngredientRepository(InnoCheffingContext context) : Repository(context), IIngredientRepository
+public class IngredientRepository(InnoCheffingContext context) : Repository<Ingredient>(context), IIngredientRepository
 {
     public async Task Create(Ingredient ingredient)
     {
@@ -17,19 +17,6 @@ public class IngredientRepository(InnoCheffingContext context) : Repository(cont
         await _context.SaveChangesAsync();
     }
 
-    public async Task<bool> Delete(Guid id)
-    {
-        Ingredient? ingredient = await _context.Ingredients.FindAsync(id);
-
-        if (ingredient is null)
-            return false;
-
-        _context.Remove(ingredient);
-        await _context.SaveChangesAsync();
-
-        return true;
-    }
-
     public async Task<PagedList<Ingredient>> Read(IngredientParameters ingredientParameters, CancellationToken cancellationToken)
     {
         IQueryable<Ingredient> source = _context.Ingredients.AsNoTracking().OrderBy(i => i.Name);
@@ -37,13 +24,6 @@ public class IngredientRepository(InnoCheffingContext context) : Repository(cont
         PagedList<Ingredient> ingredients = await PagedList<Ingredient>.ToPagedList(source, ingredientParameters.PageNumber, ingredientParameters.PageSize);
 
         return ingredients;
-    }
-    
-    public async Task<Ingredient?> Read(Guid id)
-    {
-        Ingredient? ingredient = await _context.Ingredients.FindAsync(id);
-
-        return ingredient;
     }
 
     public async Task<bool> Update(Guid id, Ingredient ingredient)

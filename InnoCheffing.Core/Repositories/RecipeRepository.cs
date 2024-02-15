@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InnoCheffing.Core.Repositories;
 
-public class RecipeRepository(InnoCheffingContext context) : Repository(context), IRecipeRepository
+public class RecipeRepository(InnoCheffingContext context) : Repository<Recipe>(context),  IRecipeRepository
 {
     public async Task Create(Recipe recipe)
     {
@@ -19,13 +19,6 @@ public class RecipeRepository(InnoCheffingContext context) : Repository(context)
 
         _context.Add(recipe);
         await _context.SaveChangesAsync();
-    }
-
-    public async Task<Recipe?> Read(Guid id)
-    {
-        Recipe? recipe = await _context.Recipes.FindAsync(id);
-
-        return recipe;
     }
 
     public async Task<PagedList<Recipe>> Read(RecipeParameters parameters, CancellationToken cancellationToken)
@@ -53,18 +46,6 @@ public class RecipeRepository(InnoCheffingContext context) : Repository(context)
         recipeToUpdate.RecipeCategoryId = recipe.RecipeCategoryId;
         recipeToUpdate.ModifiedOn = DateTime.UtcNow;
 
-        await _context.SaveChangesAsync();
-
-        return true;
-    }
-    public async Task<bool> Delete(Guid id)
-    {
-        Recipe? recipe = await _context.Recipes.FindAsync(id);
-
-        if (recipe is null)
-            return false;
-
-        _context.Remove(recipe);
         await _context.SaveChangesAsync();
 
         return true;

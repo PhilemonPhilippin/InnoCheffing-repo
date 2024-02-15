@@ -2,7 +2,6 @@
 
 namespace InnoCheffing.Core.Interfaces;
 
-public interface IPreparationStepRepository
+public interface IPreparationStepRepository : IRepository<PreparationStep>
 {
-    Task<PreparationStep> Read(Guid id);
 }
