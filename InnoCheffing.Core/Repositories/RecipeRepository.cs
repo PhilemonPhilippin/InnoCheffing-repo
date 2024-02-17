@@ -12,7 +12,9 @@ public class RecipeRepository(InnoCheffingContext context) : Repository<Recipe>(
     {
         string recipeName = ValidateName(recipe.Name);
         string? description = ValidateDescription(recipe.Description);
-        await ValidateRecipeCategoryId(recipe.RecipeCategoryId);
+        
+        if (recipe.RecipeCategoryId is not null)
+            await ValidateRecipeCategoryId(recipe.RecipeCategoryId);
 
         recipe.Name = recipeName;
         recipe.Description = description;
@@ -39,7 +41,10 @@ public class RecipeRepository(InnoCheffingContext context) : Repository<Recipe>(
 
         string recipeName = ValidateName(recipe.Name);
         string? description = ValidateDescription(recipe.Description);
-        await ValidateRecipeCategoryId(recipe.RecipeCategoryId);
+
+
+        if (recipe.RecipeCategoryId is not null)
+            await ValidateRecipeCategoryId(recipe.RecipeCategoryId);
 
         recipeToUpdate.Name = recipeName;
         recipeToUpdate.Description = description;
@@ -63,7 +68,7 @@ public class RecipeRepository(InnoCheffingContext context) : Repository<Recipe>(
         return description;
     }
 
-    private async Task ValidateRecipeCategoryId(Guid recipeCategoryId)
+    private async Task ValidateRecipeCategoryId(Guid? recipeCategoryId)
     {
         RecipeCategory? recipeCategory = await _context.RecipeCategories.FindAsync(recipeCategoryId);
 

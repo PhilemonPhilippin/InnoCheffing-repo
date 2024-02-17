@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace InnoCheffing.Core.Migrations
 {
     [DbContext(typeof(InnoCheffingContext))]
-    [Migration("20240211104006_FirstMigration")]
-    partial class FirstMigration
+    [Migration("20240217060404_StepNumberCheckConstraint")]
+    partial class StepNumberCheckConstraint
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace InnoCheffing.Core.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("InnoCheffing.Core.Entities.Ingredient", b =>
+            modelBuilder.Entity("InnoCheffing.Core.Entities.DataBase.Ingredient", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -47,7 +47,7 @@ namespace InnoCheffing.Core.Migrations
                     b.ToTable("Ingredient");
                 });
 
-            modelBuilder.Entity("InnoCheffing.Core.Entities.PreparationStep", b =>
+            modelBuilder.Entity("InnoCheffing.Core.Entities.DataBase.PreparationStep", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -68,21 +68,26 @@ namespace InnoCheffing.Core.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Step")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<int>("StepNumber")
+                    b.Property<int?>("StepNumber")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("RecipeId");
 
-                    b.ToTable("PreparationStep");
+                    b.HasIndex("StepNumber")
+                        .IsUnique();
+
+                    b.ToTable("PreparationStep", t =>
+                        {
+                            t.HasCheckConstraint("CK_PreparationStep_StepNumber", "\"StepNumber\" > 0");
+                        });
                 });
 
-            modelBuilder.Entity("InnoCheffing.Core.Entities.Recipe", b =>
+            modelBuilder.Entity("InnoCheffing.Core.Entities.DataBase.Recipe", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -103,7 +108,7 @@ namespace InnoCheffing.Core.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<Guid>("RecipeCategoryId")
+                    b.Property<Guid?>("RecipeCategoryId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -113,7 +118,7 @@ namespace InnoCheffing.Core.Migrations
                     b.ToTable("Recipe");
                 });
 
-            modelBuilder.Entity("InnoCheffing.Core.Entities.RecipeCategory", b =>
+            modelBuilder.Entity("InnoCheffing.Core.Entities.DataBase.RecipeCategory", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -135,7 +140,7 @@ namespace InnoCheffing.Core.Migrations
                     b.ToTable("RecipeCategory");
                 });
 
-            modelBuilder.Entity("InnoCheffing.Core.Entities.RecipeIngredient", b =>
+            modelBuilder.Entity("InnoCheffing.Core.Entities.DataBase.RecipeIngredient", b =>
                 {
                     b.Property<Guid>("IngredientId")
                         .HasColumnType("uuid");
@@ -146,22 +151,12 @@ namespace InnoCheffing.Core.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("IngredientQuantity")
-                        .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
                     b.Property<DateTime>("ModifiedOn")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
 
                     b.HasKey("IngredientId", "RecipeId");
 
@@ -170,9 +165,9 @@ namespace InnoCheffing.Core.Migrations
                     b.ToTable("RecipeIngredient");
                 });
 
-            modelBuilder.Entity("InnoCheffing.Core.Entities.PreparationStep", b =>
+            modelBuilder.Entity("InnoCheffing.Core.Entities.DataBase.PreparationStep", b =>
                 {
-                    b.HasOne("InnoCheffing.Core.Entities.Recipe", "Recipe")
+                    b.HasOne("InnoCheffing.Core.Entities.DataBase.Recipe", "Recipe")
                         .WithMany()
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -181,26 +176,24 @@ namespace InnoCheffing.Core.Migrations
                     b.Navigation("Recipe");
                 });
 
-            modelBuilder.Entity("InnoCheffing.Core.Entities.Recipe", b =>
+            modelBuilder.Entity("InnoCheffing.Core.Entities.DataBase.Recipe", b =>
                 {
-                    b.HasOne("InnoCheffing.Core.Entities.RecipeCategory", "RecipeCategory")
+                    b.HasOne("InnoCheffing.Core.Entities.DataBase.RecipeCategory", "RecipeCategory")
                         .WithMany()
-                        .HasForeignKey("RecipeCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RecipeCategoryId");
 
                     b.Navigation("RecipeCategory");
                 });
 
-            modelBuilder.Entity("InnoCheffing.Core.Entities.RecipeIngredient", b =>
+            modelBuilder.Entity("InnoCheffing.Core.Entities.DataBase.RecipeIngredient", b =>
                 {
-                    b.HasOne("InnoCheffing.Core.Entities.Ingredient", "Ingredient")
+                    b.HasOne("InnoCheffing.Core.Entities.DataBase.Ingredient", "Ingredient")
                         .WithMany("RecipeIngredients")
                         .HasForeignKey("IngredientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("InnoCheffing.Core.Entities.Recipe", "Recipe")
+                    b.HasOne("InnoCheffing.Core.Entities.DataBase.Recipe", "Recipe")
                         .WithMany("RecipeIngredients")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -211,12 +204,12 @@ namespace InnoCheffing.Core.Migrations
                     b.Navigation("Recipe");
                 });
 
-            modelBuilder.Entity("InnoCheffing.Core.Entities.Ingredient", b =>
+            modelBuilder.Entity("InnoCheffing.Core.Entities.DataBase.Ingredient", b =>
                 {
                     b.Navigation("RecipeIngredients");
                 });
 
-            modelBuilder.Entity("InnoCheffing.Core.Entities.Recipe", b =>
+            modelBuilder.Entity("InnoCheffing.Core.Entities.DataBase.Recipe", b =>
                 {
                     b.Navigation("RecipeIngredients");
                 });

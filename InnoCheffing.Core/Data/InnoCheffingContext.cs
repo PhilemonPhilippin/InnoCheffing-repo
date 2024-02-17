@@ -1,5 +1,6 @@
 ﻿using InnoCheffing.Core.Entities.DataBase;
 using Microsoft.EntityFrameworkCore;
+using System.Xml;
 
 namespace InnoCheffing.Core.Data;
 
@@ -29,5 +30,11 @@ public class InnoCheffingContext : DbContext
             .HasOne(ir => ir.Recipe)
             .WithMany(ir => ir.RecipeIngredients)
             .HasForeignKey(ir => ir.RecipeId);
+
+        // Unique
+        modelBuilder.Entity<PreparationStep>().HasIndex(ps => ps.StepNumber).IsUnique();
+
+        // Check Constraint
+        modelBuilder.Entity<PreparationStep>().ToTable(table => table.HasCheckConstraint("CK_PreparationStep_StepNumber", "\"StepNumber\" > 0"));
     }
 }

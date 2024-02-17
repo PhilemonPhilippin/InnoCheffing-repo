@@ -10,8 +10,6 @@ public class RecipeIngredient : DateMetadata
     public Ingredient Ingredient { get; set; }
     public Guid RecipeId { get; set; }
     public Recipe Recipe { get; set; }
-
-    [Required]
     [MaxLength(150)]
-    public string IngredientQuantity { get; set; }
+    public string? IngredientQuantity { get; set; }
 }

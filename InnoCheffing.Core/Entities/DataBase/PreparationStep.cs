@@ -6,14 +6,11 @@ namespace InnoCheffing.Core.Entities.DataBase;
 [Table(nameof(PreparationStep))]
 public class PreparationStep : Entity
 {
-    [Required]
-    public int StepNumber { get; set; }
-
-    [Required]
+    public int? StepNumber { get; set; }
     [MaxLength(500)]
-    public string Step { get; set; }
-
-    [ForeignKey(nameof(RecipeId))]
-    public Recipe Recipe { get; set; }
+    public string? Step { get; set; }
+    [Required]
+    [ForeignKey(nameof(Recipe))]
     public Guid RecipeId { get; set; }
+    public Recipe Recipe { get; set; }
 }

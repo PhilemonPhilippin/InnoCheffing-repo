@@ -65,18 +65,23 @@ namespace InnoCheffing.Core.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Step")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<int>("StepNumber")
+                    b.Property<int?>("StepNumber")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("RecipeId");
 
-                    b.ToTable("PreparationStep");
+                    b.HasIndex("StepNumber")
+                        .IsUnique();
+
+                    b.ToTable("PreparationStep", t =>
+                        {
+                            t.HasCheckConstraint("CK_PreparationStep_StepNumber", "\"StepNumber\" > 0");
+                        });
                 });
 
             modelBuilder.Entity("InnoCheffing.Core.Entities.DataBase.Recipe", b =>
@@ -100,7 +105,7 @@ namespace InnoCheffing.Core.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<Guid>("RecipeCategoryId")
+                    b.Property<Guid?>("RecipeCategoryId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -144,7 +149,6 @@ namespace InnoCheffing.Core.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("IngredientQuantity")
-                        .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
@@ -173,9 +177,7 @@ namespace InnoCheffing.Core.Migrations
                 {
                     b.HasOne("InnoCheffing.Core.Entities.DataBase.RecipeCategory", "RecipeCategory")
                         .WithMany()
-                        .HasForeignKey("RecipeCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RecipeCategoryId");
 
                     b.Navigation("RecipeCategory");
                 });

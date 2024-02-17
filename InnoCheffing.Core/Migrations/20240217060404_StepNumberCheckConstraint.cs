@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace InnoCheffing.Core.Migrations
 {
     /// <inheritdoc />
-    public partial class FirstMigration : Migration
+    public partial class StepNumberCheckConstraint : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,9 +16,9 @@ namespace InnoCheffing.Core.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,9 +30,9 @@ namespace InnoCheffing.Core.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -45,10 +45,10 @@ namespace InnoCheffing.Core.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    RecipeCategoryId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    RecipeCategoryId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -57,8 +57,7 @@ namespace InnoCheffing.Core.Migrations
                         name: "FK_Recipe_RecipeCategory_RecipeCategoryId",
                         column: x => x.RecipeCategoryId,
                         principalTable: "RecipeCategory",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -66,16 +65,17 @@ namespace InnoCheffing.Core.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    StepNumber = table.Column<int>(type: "integer", nullable: false),
-                    Step = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    StepNumber = table.Column<int>(type: "integer", nullable: true),
+                    Step = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     RecipeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PreparationStep", x => x.Id);
+                    table.CheckConstraint("CK_PreparationStep_StepNumber", "\"StepNumber\" > 0");
                     table.ForeignKey(
                         name: "FK_PreparationStep_Recipe_RecipeId",
                         column: x => x.RecipeId,
@@ -90,9 +90,7 @@ namespace InnoCheffing.Core.Migrations
                 {
                     IngredientId = table.Column<Guid>(type: "uuid", nullable: false),
                     RecipeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    IngredientQuantity = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    IngredientQuantity = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -117,6 +115,12 @@ namespace InnoCheffing.Core.Migrations
                 name: "IX_PreparationStep_RecipeId",
                 table: "PreparationStep",
                 column: "RecipeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PreparationStep_StepNumber",
+                table: "PreparationStep",
+                column: "StepNumber",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Recipe_RecipeCategoryId",
