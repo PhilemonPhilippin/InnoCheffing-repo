@@ -34,17 +34,16 @@ public class RecipeRepository(InnoCheffingContext context) : Repository<Recipe>(
 
     public async Task<bool> Update(Guid id, Recipe recipe)
     {
+        string recipeName = ValidateName(recipe.Name);
+        string? description = ValidateDescription(recipe.Description);
+
+        if (recipe.RecipeCategoryId is not null)
+            await ValidateRecipeCategoryId(recipe.RecipeCategoryId);
+
         Recipe? recipeToUpdate = await _context.Recipes.FindAsync(id);
 
         if (recipeToUpdate is null)
             return false;
-
-        string recipeName = ValidateName(recipe.Name);
-        string? description = ValidateDescription(recipe.Description);
-
-
-        if (recipe.RecipeCategoryId is not null)
-            await ValidateRecipeCategoryId(recipe.RecipeCategoryId);
 
         recipeToUpdate.Name = recipeName;
         recipeToUpdate.Description = description;
@@ -70,9 +69,9 @@ public class RecipeRepository(InnoCheffingContext context) : Repository<Recipe>(
 
     private async Task ValidateRecipeCategoryId(Guid? recipeCategoryId)
     {
-        RecipeCategory? recipeCategory = await _context.RecipeCategories.FindAsync(recipeCategoryId);
+        bool isCategoryValid = await _context.RecipeCategories.AsNoTracking().AnyAsync(c => c.Id == recipeCategoryId);
 
-        if (recipeCategory is null)
+        if (isCategoryValid == false)
             throw new ArgumentOutOfRangeException(nameof(recipeCategoryId), "The recipe category id does not exist.");
     }
 }

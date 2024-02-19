@@ -4,11 +4,8 @@ using System.Xml;
 
 namespace InnoCheffing.Core.Data;
 
-public class InnoCheffingContext : DbContext
+public class InnoCheffingContext(DbContextOptions<InnoCheffingContext> options) : DbContext(options)
 {
-    public InnoCheffingContext(DbContextOptions<InnoCheffingContext> options) : base(options)
-    {
-    }
     public DbSet<Ingredient> Ingredients { get; set; }
     public DbSet<RecipeCategory> RecipeCategories { get; set; }
     public DbSet<Recipe> Recipes { get; set; }

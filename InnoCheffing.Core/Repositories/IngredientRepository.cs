@@ -28,12 +28,12 @@ public class IngredientRepository(InnoCheffingContext context) : Repository<Ingr
 
     public async Task<bool> Update(Guid id, Ingredient ingredient)
     {
+        string ingredientName = ValidateName(ingredient.Name);
+
         Ingredient? ingredientToUpdate = await _context.Ingredients.FindAsync(id);
 
         if (ingredientToUpdate is null)
             return false;
-
-        string ingredientName = ValidateName(ingredient.Name);
 
         ingredientToUpdate.Name = ingredientName;
         ingredientToUpdate.ModifiedOn = DateTime.UtcNow;
