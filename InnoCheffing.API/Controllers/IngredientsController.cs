@@ -31,11 +31,11 @@ public class IngredientsController(IIngredientRepository ingredientRepository) :
 
         Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(metadata));
 
-        if (ingredients.TotalCount == 0)
-            return NotFound();
-
         if (ingredientParameters.PageNumber > ingredients.TotalPages)
             return NotFound("This page number does not exist.");
+
+        if (ingredients.TotalCount == 0)
+            return Ok(Enumerable.Empty<IngredientDto>());
 
         IEnumerable<IngredientDto> dtos = ingredients.Select(i => i.MapToIngredientDto());
 

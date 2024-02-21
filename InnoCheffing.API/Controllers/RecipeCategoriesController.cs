@@ -31,11 +31,11 @@ public class RecipeCategoriesController(IRecipeCategoryRepository recipeCategory
 
         Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(metadata));
 
-        if (categories.TotalCount == 0)
-            return NotFound();
-
         if (parameters.PageNumber > categories.TotalPages)
             return NotFound("This page number does not exist.");
+
+        if (categories.TotalCount == 0)
+            return Ok(Enumerable.Empty<RecipeCategoryDto>());
            
         IEnumerable<RecipeCategoryDto> dtos = categories.Select(rc => rc.MapToCategoryDto());
 

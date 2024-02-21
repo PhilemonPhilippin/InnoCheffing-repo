@@ -13,7 +13,7 @@ public class PreparationStepsController(IPreparationStepRepository preparationSt
 {
     private readonly IPreparationStepRepository _preparationStepRepository = preparationStepRepository;
 
-    // Specific route for GET ALL
+    // Specific nested route for GetAll
     [HttpGet("/api/recipes/{recipeId:guid}/[controller]")]
     public async Task<ActionResult<IEnumerable<PreparationStepDto>>> GetAll(Guid recipeId)
     {
@@ -22,7 +22,7 @@ public class PreparationStepsController(IPreparationStepRepository preparationSt
             IEnumerable<PreparationStep> steps = await _preparationStepRepository.ReadAll(recipeId);
 
             if (steps.Any() == false)
-                return NotFound();
+                return Ok(Enumerable.Empty<PreparationStepDto>());
 
             IEnumerable<PreparationStepDto> dtos = steps.Select(s => s.MapToPreparationStepDto());
 
