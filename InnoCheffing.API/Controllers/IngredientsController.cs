@@ -31,7 +31,7 @@ public class IngredientsController(IIngredientRepository ingredientRepository) :
 
         Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(metadata));
 
-        if (ingredientParameters.PageNumber > ingredients.TotalPages)
+        if (ingredientParameters.PageNumber > ingredients.TotalPages && ingredients.TotalPages != 0)
             return NotFound("This page number does not exist.");
 
         if (ingredients.TotalCount == 0)

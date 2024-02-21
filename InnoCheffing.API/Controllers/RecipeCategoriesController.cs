@@ -31,7 +31,7 @@ public class RecipeCategoriesController(IRecipeCategoryRepository recipeCategory
 
         Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(metadata));
 
-        if (parameters.PageNumber > categories.TotalPages)
+        if (parameters.PageNumber > categories.TotalPages && categories.TotalPages != 0)
             return NotFound("This page number does not exist.");
 
         if (categories.TotalCount == 0)
