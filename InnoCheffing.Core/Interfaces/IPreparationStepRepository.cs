@@ -5,6 +5,6 @@ namespace InnoCheffing.Core.Interfaces;
 public interface IPreparationStepRepository : IRepository<PreparationStep>
 {
     Task<IEnumerable<PreparationStep>> ReadAll(Guid recipeId);
-    Task Create(Guid recipeId, PreparationStep preparationStep);
-    Task<bool> Update(Guid recipeId, Guid preparationStepId,PreparationStep preparationStep);
+    Task Create(PreparationStep preparationStep);
+    Task<bool> Update(Guid preparationStepId, PreparationStep preparationStep);
 }

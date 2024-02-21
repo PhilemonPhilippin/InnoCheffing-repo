@@ -1,5 +1,6 @@
 ﻿using InnoCheffing.Core.Data;
 using InnoCheffing.Core.Entities.DataBase;
+using InnoCheffing.Core.Entities.Exceptions;
 using InnoCheffing.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,15 +8,15 @@ namespace InnoCheffing.Core.Repositories;
 
 public class PreparationStepRepository(InnoCheffingContext context) : Repository<PreparationStep>(context), IPreparationStepRepository
 {
-    public async Task Create(Guid recipeId, PreparationStep preparationStep)
+    public async Task Create(PreparationStep preparationStep)
     {
         string stepName = ValidateName(preparationStep.Name);
         string? step = ValidateStep(preparationStep.Step);
 
-        await ValidateRecipeId(recipeId);
+        await ValidateRecipeId(preparationStep.RecipeId);
 
         if (preparationStep.StepNumber is not null)
-            await ValidateStepNumber(preparationStep.StepNumber, recipeId);
+            await ValidateStepNumber(preparationStep.StepNumber, preparationStep.RecipeId);
 
         preparationStep.Name = stepName;
         preparationStep.Step = step;
@@ -26,9 +27,15 @@ public class PreparationStepRepository(InnoCheffingContext context) : Repository
 
     public async Task<IEnumerable<PreparationStep>> ReadAll(Guid recipeId)
     {
+        bool isRecipeIdValid = await _context.Recipes.AsNoTracking().AnyAsync(r => r.Id == recipeId);
+
+        if (isRecipeIdValid == false)
+            throw new NotFoundException("The recipe id does not exist.");
+
         // Order by ascending step numbers with value first, then those with null, then order by Name.
         IEnumerable<PreparationStep> steps = await _context.PreparationSteps
             .AsNoTracking()
+            .Where(s => s.RecipeId == recipeId)
             .OrderByDescending(s => s.StepNumber.HasValue)
             .ThenBy(s => s.StepNumber)
             .ThenBy(s => s.Name)
@@ -36,15 +43,15 @@ public class PreparationStepRepository(InnoCheffingContext context) : Repository
 
         return steps;
     }
-    public async Task<bool> Update(Guid recipeId, Guid preparationStepId, PreparationStep preparationStep)
+    public async Task<bool> Update(Guid preparationStepId, PreparationStep preparationStep)
     {
         string stepName = ValidateName(preparationStep.Name);
         string? step = ValidateStep(preparationStep.Step);
 
-        await ValidateRecipeId(recipeId);
+        await ValidateRecipeId(preparationStep.RecipeId);
 
         if (preparationStep.StepNumber is not null)
-            await ValidateStepNumber(preparationStep.StepNumber, recipeId, preparationStepId);
+            await ValidateStepNumber(preparationStep.StepNumber, preparationStep.RecipeId, preparationStepId);
 
         PreparationStep? preparationStepToUpdate = await _context.PreparationSteps.FindAsync(preparationStepId);
 

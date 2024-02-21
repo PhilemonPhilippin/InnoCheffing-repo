@@ -1,34 +1,43 @@
 ﻿using InnoCheffing.API.Contracts;
 using InnoCheffing.API.Mappers;
 using InnoCheffing.Core.Entities.DataBase;
+using InnoCheffing.Core.Entities.Exceptions;
 using InnoCheffing.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoCheffing.API.Controllers;
 
-[Route("api/recipes/{recipeId:guid}/[controller]")]
+[Route("api/[controller]")]
 [ApiController]
 public class PreparationStepsController(IPreparationStepRepository preparationStepRepository) : ControllerBase
 {
     private readonly IPreparationStepRepository _preparationStepRepository = preparationStepRepository;
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<PreparationStepDto>>> Get(Guid recipeId)
+    // Specific route for GET ALL
+    [HttpGet("/api/recipes/{recipeId:guid}/[controller]")]
+    public async Task<ActionResult<IEnumerable<PreparationStepDto>>> GetAll(Guid recipeId)
     {
-        IEnumerable<PreparationStep> steps = await _preparationStepRepository.ReadAll(recipeId);
+        try
+        {
+            IEnumerable<PreparationStep> steps = await _preparationStepRepository.ReadAll(recipeId);
 
-        if (steps.Any() == false)
-            return NotFound();
+            if (steps.Any() == false)
+                return NotFound();
 
-        IEnumerable<PreparationStepDto> dtos = steps.Select(s => s.MapToPreparationStepDto());
+            IEnumerable<PreparationStepDto> dtos = steps.Select(s => s.MapToPreparationStepDto());
 
-        return Ok(dtos);
+            return Ok(dtos);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
-    [HttpGet("{preparationStepId:guid}")]
-    public async Task<ActionResult<PreparationStepDto>> Get(Guid recipeId, Guid preparationStepId)
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<PreparationStepDto>> Get(Guid id)
     {
-        PreparationStep? preparationStep = await _preparationStepRepository.Read(preparationStepId);
+        PreparationStep? preparationStep = await _preparationStepRepository.Read(id);
 
         if (preparationStep is null)
             return NotFound();
@@ -37,17 +46,17 @@ public class PreparationStepsController(IPreparationStepRepository preparationSt
     }
 
     [HttpPost]
-    public async Task<ActionResult<PreparationStepDto>> Post(Guid recipeId, PreparationStepRequest preparationStepRequest)
+    public async Task<ActionResult<PreparationStepDto>> Post(PreparationStepRequest preparationStepRequest)
     {
         try
         {
-            PreparationStep preparationStep = preparationStepRequest.MapToPreparationStep(recipeId);
+            PreparationStep preparationStep = preparationStepRequest.MapToPreparationStep();
 
-            await _preparationStepRepository.Create(recipeId, preparationStep);
+            await _preparationStepRepository.Create(preparationStep);
 
             PreparationStepDto dto = preparationStep.MapToPreparationStepDto();
 
-            return CreatedAtAction(nameof(Get), new { recipeId, preparationStepId = preparationStep.Id }, dto);
+            return CreatedAtAction(nameof(Get), new { id = preparationStep.Id }, dto);
         }
         catch (ArgumentOutOfRangeException ex)
         {
@@ -59,14 +68,14 @@ public class PreparationStepsController(IPreparationStepRepository preparationSt
         }
     }
 
-    [HttpPut("{preparationStepId:guid}")]
-    public async Task<IActionResult> Put(Guid recipeId, Guid preparationStepId, PreparationStepRequest preparationStepRequest)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Put(Guid id, PreparationStepRequest preparationStepRequest)
     {
         try
         {
-            PreparationStep step = preparationStepRequest.MapToPreparationStep(recipeId);
+            PreparationStep step = preparationStepRequest.MapToPreparationStep();
 
-            bool stepUpdated = await _preparationStepRepository.Update(recipeId, preparationStepId, step);
+            bool stepUpdated = await _preparationStepRepository.Update(id, step);
 
             return stepUpdated ? NoContent() : NotFound();
         }
@@ -80,10 +89,10 @@ public class PreparationStepsController(IPreparationStepRepository preparationSt
         }
     }
 
-    [HttpDelete("{preparationStepId:guid}")]
-    public async Task<IActionResult> Delete(Guid recipeId, Guid preparationStepId)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
-        bool stepDeleted = await _preparationStepRepository.Delete(preparationStepId);
+        bool stepDeleted = await _preparationStepRepository.Delete(id);
 
         return stepDeleted ? NoContent() : NotFound();
     }
