@@ -29,7 +29,7 @@ public class InnoCheffingContext(DbContextOptions<InnoCheffingContext> options) 
             .HasForeignKey(ir => ir.RecipeId);
 
         // Unique
-        modelBuilder.Entity<PreparationStep>().HasIndex(ps => ps.StepNumber).IsUnique();
+        modelBuilder.Entity<PreparationStep>().HasIndex(ps => new {ps.StepNumber, ps.RecipeId}).IsUnique();
 
         // Check Constraint
         modelBuilder.Entity<PreparationStep>().ToTable(table => table.HasCheckConstraint("CK_PreparationStep_StepNumber", "\"StepNumber\" > 0"));

@@ -13,10 +13,11 @@ public sealed class StepNumberAttribute : ValidationAttribute
         if (value is null)
             return true;
 
-        int stepNumber = Convert.ToInt32(value);
-
-        if (stepNumber <= 0)
-            result = false;
+        if (value is int stepNumber)
+        {
+            if (stepNumber <= 0)
+                return false;
+        }
 
         return result;
     }
