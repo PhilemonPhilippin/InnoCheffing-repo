@@ -13,7 +13,7 @@ public class PreparationStepsController(IPreparationStepRepository preparationSt
 {
     private readonly IPreparationStepRepository _preparationStepRepository = preparationStepRepository;
 
-    // Specific nested route for GetAll
+    // Specific nested route for GetAll endpoint.
     [HttpGet("/api/recipes/{recipeId:guid}/[controller]")]
     public async Task<ActionResult<IEnumerable<PreparationStepDto>>> GetAll(Guid recipeId)
     {
