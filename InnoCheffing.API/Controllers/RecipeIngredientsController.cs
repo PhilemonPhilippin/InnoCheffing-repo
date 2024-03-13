@@ -68,4 +68,12 @@ public class RecipeIngredientsController(IRecipeIngredientRepository recipeIngre
             return BadRequest(ex.Message);
         }
     }
+
+    [HttpDelete("{recipeId:guid}/{ingredientId:guid}")]
+    public async Task<IActionResult> Delete(Guid recipeId, Guid ingredientId)
+    {
+        bool recipeIngredientDeleted = await _recipeIngredientRepository.Delete(recipeId, ingredientId);
+
+        return recipeIngredientDeleted ? NoContent() : NotFound();
+    }
 }

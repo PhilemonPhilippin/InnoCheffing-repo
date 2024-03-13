@@ -47,6 +47,19 @@ public class RecipeIngredientRepository(InnoCheffingContext context) : IRecipeIn
         return recipeIngredient;
     }
 
+    public async Task<bool> Delete(Guid recipeId, Guid ingredientId)
+    {
+        RecipeIngredient? recipeIngredient = await _context.RecipeIngredients.FindAsync(ingredientId, recipeId);
+
+        if (recipeIngredient is null)
+            return false;
+
+        _context.Remove(recipeIngredient);
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
+
     private async Task ValidateUniqueIdPair(Guid recipeId, Guid ingredientId)
     {
         bool idPairExist = await _context.RecipeIngredients
