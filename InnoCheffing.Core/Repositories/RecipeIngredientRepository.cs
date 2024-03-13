@@ -1,5 +1,6 @@
 ﻿using InnoCheffing.Core.Data;
 using InnoCheffing.Core.Entities.DataBase;
+using InnoCheffing.Core.Entities.Exceptions;
 using InnoCheffing.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,22 @@ public class RecipeIngredientRepository(InnoCheffingContext context) : IRecipeIn
 
         _context.Add(recipeIngredient);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<RecipeIngredient>> Read(Guid recipeId)
+    {
+        bool isRecipeIdValid = await _context.Recipes.AsNoTracking().AnyAsync(r => r.Id == recipeId);
+
+        if (isRecipeIdValid == false)
+            throw new NotFoundException("The recipe id does not exist.");
+
+        IEnumerable<RecipeIngredient> recipeIngredients = await _context.RecipeIngredients
+            .AsNoTracking()
+            .Where(ri => ri.RecipeId == recipeId)
+            .OrderBy(ri => ri.CreatedOn)
+            .ToListAsync();
+
+        return recipeIngredients;
     }
 
     public async Task<RecipeIngredient?> Read(Guid recipeId, Guid ingredientId)
