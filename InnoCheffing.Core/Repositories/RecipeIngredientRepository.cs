@@ -23,6 +23,13 @@ public class RecipeIngredientRepository(InnoCheffingContext context) : IRecipeIn
         await _context.SaveChangesAsync();
     }
 
+    public async Task<RecipeIngredient?> Read(Guid recipeId, Guid ingredientId)
+    {
+        RecipeIngredient? recipeIngredient = await _context.RecipeIngredients.FindAsync(ingredientId, recipeId);
+
+        return recipeIngredient;
+    }
+
     private async Task ValidateUniqueIdPair(Guid recipeId, Guid ingredientId)
     {
         bool idPairExist = await _context.RecipeIngredients

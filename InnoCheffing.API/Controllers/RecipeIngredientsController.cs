@@ -12,6 +12,17 @@ public class RecipeIngredientsController(IRecipeIngredientRepository recipeIngre
 {
     private readonly IRecipeIngredientRepository _recipeIngredientRepository = recipeIngredientRepository;
 
+    [HttpGet("{recipeId:guid}/{ingredientId:guid}")]
+    public async Task<ActionResult<RecipeIngredientDto>> Get(Guid recipeId, Guid ingredientId)
+    {
+        RecipeIngredient? recipeIngredient = await _recipeIngredientRepository.Read(recipeId, ingredientId);
+
+        if (recipeIngredient is null)
+            return NotFound();
+
+        return Ok(recipeIngredient.MapToDto());
+    }
+
     [HttpPost]
     public async Task<ActionResult<RecipeIngredientDto>> Post(RecipeIngredientRequest recipeIngredientRequest)
     {
@@ -22,8 +33,8 @@ public class RecipeIngredientsController(IRecipeIngredientRepository recipeIngre
             await _recipeIngredientRepository.Create(recipeIngredient);
 
             RecipeIngredientDto dto = recipeIngredient.MapToDto();
-            return Ok(dto);
-            // TODO: Return CreatedAtAction when Get action is made
+
+            return CreatedAtAction(nameof(Get), new { recipeId = recipeIngredient.RecipeId, ingredientId = recipeIngredient.IngredientId }, dto);
         }
         catch (ArgumentOutOfRangeException ex)
         {
