@@ -5,7 +5,7 @@ namespace InnoCheffing.API.Mappers;
 
 internal static class RecipeIngredientMappers
 {
-    internal static RecipeIngredient MapToRecipeIngredient(this RecipeIngredientRequest request)
+    internal static RecipeIngredient MapToRecipeIngredient(this RecipeIngredientPostRequest request)
     {
         return new()
         {
@@ -14,6 +14,7 @@ internal static class RecipeIngredientMappers
             IngredientQuantity = request.IngredientQuantity
         };
     }
+
     internal static RecipeIngredientDto MapToDto(this RecipeIngredient recipeIngredient) => 
         new(recipeIngredient.IngredientId, recipeIngredient.RecipeId, recipeIngredient.IngredientQuantity);
 }

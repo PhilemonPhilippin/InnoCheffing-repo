@@ -47,7 +47,7 @@ public class RecipeIngredientsController(IRecipeIngredientRepository recipeIngre
     }
 
     [HttpPost]
-    public async Task<ActionResult<RecipeIngredientDto>> Post(RecipeIngredientRequest recipeIngredientRequest)
+    public async Task<ActionResult<RecipeIngredientDto>> Post(RecipeIngredientPostRequest recipeIngredientRequest)
     {
         try
         {
@@ -64,6 +64,28 @@ public class RecipeIngredientsController(IRecipeIngredientRepository recipeIngre
             return BadRequest(ex.Message);
         }
         catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut("{recipeId:guid}/{ingredientId:guid}")]
+    public async Task<IActionResult> Put(Guid recipeId, Guid ingredientId, RecipeIngredientPutRequest request)
+    {
+        try
+        {
+            RecipeIngredient recipeIngredient = new()
+            {
+                RecipeId = recipeId,
+                IngredientId = ingredientId,
+                IngredientQuantity = request.IngredientQuantity
+            };
+
+            bool recipeIngredientUpdated = await _recipeIngredientRepository.Update(recipeIngredient);
+
+            return recipeIngredientUpdated ? NoContent() : NotFound();
+        }
+        catch (ArgumentOutOfRangeException ex)
         {
             return BadRequest(ex.Message);
         }

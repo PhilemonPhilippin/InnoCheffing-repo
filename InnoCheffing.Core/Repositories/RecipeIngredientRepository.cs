@@ -47,6 +47,23 @@ public class RecipeIngredientRepository(InnoCheffingContext context) : IRecipeIn
         return recipeIngredient;
     }
 
+    public async Task<bool> Update(RecipeIngredient recipeIngredient)
+    {
+        string? ingredientQuantity = ValidateQuantity(recipeIngredient.IngredientQuantity);
+
+        RecipeIngredient? recipeIngredientToUpdate = await Read(recipeIngredient.RecipeId, recipeIngredient.IngredientId);
+
+        if (recipeIngredientToUpdate is null)
+            return false;
+
+        recipeIngredientToUpdate.IngredientQuantity = ingredientQuantity;
+        recipeIngredientToUpdate.ModifiedOn = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
+
     public async Task<bool> Delete(Guid recipeId, Guid ingredientId)
     {
         RecipeIngredient? recipeIngredient = await _context.RecipeIngredients.FindAsync(ingredientId, recipeId);
@@ -86,7 +103,7 @@ public class RecipeIngredientRepository(InnoCheffingContext context) : IRecipeIn
             throw new ArgumentOutOfRangeException(nameof(recipeId), "The recipe id does not exist.");
     }
 
-    private string ValidateQuantity(string? quantity)
+    private static string? ValidateQuantity(string? quantity)
     {
         if (string.IsNullOrEmpty(quantity))
             return quantity;
