@@ -24,7 +24,7 @@ public sealed class StepNumberAttribute : ValidationAttribute
 
     public override string FormatErrorMessage(string name)
     {
-        return String.Format(CultureInfo.CurrentCulture,
+        return string.Format(CultureInfo.CurrentCulture,
           //ErrorMessageString, 
           "The step number must be greater than zero.",
           name);

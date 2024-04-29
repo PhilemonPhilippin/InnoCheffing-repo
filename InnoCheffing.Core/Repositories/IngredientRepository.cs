@@ -30,7 +30,7 @@ public class IngredientRepository(InnoCheffingContext context) : Repository<Ingr
     {
         string ingredientName = ValidateName(ingredient.Name);
 
-        Ingredient? ingredientToUpdate = await _context.Ingredients.FindAsync(id);
+        Ingredient? ingredientToUpdate = await Read(id);
 
         if (ingredientToUpdate is null)
             return false;

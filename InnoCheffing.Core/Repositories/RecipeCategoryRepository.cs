@@ -30,7 +30,7 @@ public class RecipeCategoryRepository(InnoCheffingContext context) : Repository<
     {
         string categoryName = ValidateName(category.Name);
 
-        RecipeCategory? categoryToUpdate = await _context.RecipeCategories.FindAsync(id);
+        RecipeCategory? categoryToUpdate = await Read(id);
 
         if (categoryToUpdate is null) 
             return false;

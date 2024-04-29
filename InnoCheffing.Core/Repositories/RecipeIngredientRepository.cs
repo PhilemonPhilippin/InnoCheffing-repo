@@ -66,7 +66,7 @@ public class RecipeIngredientRepository(InnoCheffingContext context) : IRecipeIn
 
     public async Task<bool> Delete(Guid recipeId, Guid ingredientId)
     {
-        RecipeIngredient? recipeIngredient = await _context.RecipeIngredients.FindAsync(ingredientId, recipeId);
+        RecipeIngredient? recipeIngredient = await Read(recipeId, ingredientId);
 
         if (recipeIngredient is null)
             return false;

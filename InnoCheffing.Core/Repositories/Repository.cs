@@ -28,7 +28,7 @@ public abstract class Repository<T>(InnoCheffingContext context) : IRepository<T
 
     public async Task<bool> Delete(Guid id)
     {
-        T? entity = await _context.FindAsync<T>(id);
+        T? entity = await Read(id);
 
         if (entity is null)
             return false;

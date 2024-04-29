@@ -32,7 +32,7 @@ public class PreparationStepRepository(InnoCheffingContext context) : Repository
         if (isRecipeIdValid == false)
             throw new NotFoundException("The recipe id does not exist.");
 
-        // Order by ascending step numbers with value first, then those with null, then order by Name.
+        // First: order by ascending step numbers with value first then those with null, second: order by Name.
         IEnumerable<PreparationStep> steps = await _context.PreparationSteps
             .AsNoTracking()
             .Where(s => s.RecipeId == recipeId)
@@ -53,7 +53,7 @@ public class PreparationStepRepository(InnoCheffingContext context) : Repository
         if (preparationStep.StepNumber is not null)
             await ValidateStepNumber(preparationStep.StepNumber, preparationStep.RecipeId, preparationStepId);
 
-        PreparationStep? preparationStepToUpdate = await _context.PreparationSteps.FindAsync(preparationStepId);
+        PreparationStep? preparationStepToUpdate = await Read(preparationStepId);
 
         if (preparationStepToUpdate is null)
             return false;

@@ -40,7 +40,7 @@ public class RecipeRepository(InnoCheffingContext context) : Repository<Recipe>(
         if (recipe.RecipeCategoryId is not null)
             await ValidateRecipeCategoryId(recipe.RecipeCategoryId);
 
-        Recipe? recipeToUpdate = await _context.Recipes.FindAsync(id);
+        Recipe? recipeToUpdate = await Read(id);
 
         if (recipeToUpdate is null)
             return false;
