@@ -33,5 +33,7 @@ public class InnoCheffingContext(DbContextOptions<InnoCheffingContext> options) 
 
         // Check Constraint
         modelBuilder.Entity<PreparationStep>().ToTable(table => table.HasCheckConstraint("CK_PreparationStep_StepNumber", "\"StepNumber\" > 0"));
+
+        modelBuilder.Seed();
     }
 }
