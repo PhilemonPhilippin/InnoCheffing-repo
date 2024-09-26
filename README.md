@@ -29,7 +29,7 @@ This database is also accessed via Entity Framework.
 
 ## Tools and tech stack
 
-I plan to build the front end with a React project using Tailwind for styles.
+I plan to build the front end with a Angular project using Tailwind for styles.
 My back end is essentially an ASP.NET API and a PostgreSQL database server.
 
 ## Early stages
