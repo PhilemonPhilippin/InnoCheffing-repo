@@ -66,6 +66,7 @@ public class IngredientsController(IIngredientRepository ingredientRepository) :
 
             return CreatedAtAction(nameof(Get), new { id = ingredient.Id }, dto);
         }
+        // TODO: Is this catch really needed ? I do return BadRequest(ex.Message) anyway...
         catch (ArgumentOutOfRangeException ex)
         {
             return BadRequest(ex.Message);

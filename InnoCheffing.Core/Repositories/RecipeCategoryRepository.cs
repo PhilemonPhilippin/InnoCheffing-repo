@@ -28,14 +28,14 @@ public class RecipeCategoryRepository(InnoCheffingContext context) : Repository<
 
     public async Task<bool> Update(Guid id, RecipeCategory category)
     {
-        string categoryName = ValidateName(category.Name);
+        string recipeCategoryName = ValidateName(category.Name);
 
         RecipeCategory? categoryToUpdate = await Read(id);
 
         if (categoryToUpdate is null) 
             return false;
 
-        categoryToUpdate.Name = categoryName;
+        categoryToUpdate.Name = recipeCategoryName;
         categoryToUpdate.ModifiedOn = DateTime.UtcNow;
         await _context.SaveChangesAsync();
 

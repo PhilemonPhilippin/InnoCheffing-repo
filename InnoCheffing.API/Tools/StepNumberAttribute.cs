@@ -10,9 +10,11 @@ public sealed class StepNumberAttribute : ValidationAttribute
     {
         bool result = true;
 
+        // Step number can be null, it's valid.
         if (value is null)
             return true;
 
+        // But Step number must be greater than 0.
         if (value is int stepNumber)
         {
             if (stepNumber <= 0)

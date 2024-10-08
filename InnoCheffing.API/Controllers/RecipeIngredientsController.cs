@@ -28,7 +28,6 @@ public class RecipeIngredientsController(IRecipeIngredientRepository recipeIngre
 
             return Ok(dtos);
         }
-
         catch (NotFoundException ex)
         {
             return NotFound(ex.Message);

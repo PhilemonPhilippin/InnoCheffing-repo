@@ -67,6 +67,7 @@ public class SeedGenerator
     public List<RecipeIngredient> CreateRecipeIngredients()
     {
         List<RecipeIngredient> retval = new();
+        // TODO: Could I not simply just set an int variable recipeCount = Recipes.Count() here ?
         Guid[] recipeIds = Recipes.Select(x => x.Id).ToArray();
         for (int i = 0; i < Ingredients.Count; i++)
         {
@@ -98,6 +99,7 @@ public class SeedGenerator
     public List<Recipe> CreateRecipes()
     {
         List<Recipe> retval = new();
+        // TODO: Could I not simply just set an int variable recipeCategoryCount = RecipeCategories.Count() here ?
         Guid[] recipeCategoryIds = RecipeCategories.Select(rc => rc.Id).ToArray();
         for (int i = 1; i <= 25; i++)
         {
