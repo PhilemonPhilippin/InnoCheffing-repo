@@ -58,6 +58,10 @@ public class PreparationStepsController(IPreparationStepRepository preparationSt
 
             return CreatedAtAction(nameof(Get), new { id = preparationStep.Id }, dto);
         }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
         catch (ArgumentOutOfRangeException ex)
         {
             return BadRequest(ex.Message);
@@ -78,6 +82,10 @@ public class PreparationStepsController(IPreparationStepRepository preparationSt
             bool stepUpdated = await _preparationStepRepository.Update(id, step);
 
             return stepUpdated ? NoContent() : NotFound();
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
         }
         catch (ArgumentOutOfRangeException ex)
         {

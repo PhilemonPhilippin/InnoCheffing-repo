@@ -85,7 +85,7 @@ public class PreparationStepRepository(InnoCheffingContext context) : Repository
         bool isRecipeIdValid = await _context.Recipes.AsNoTracking().AnyAsync(r => r.Id == recipeId);
 
         if (isRecipeIdValid == false)
-            throw new ArgumentOutOfRangeException(nameof(recipeId), "The recipe id does not exist.");
+            throw new NotFoundException("The recipe id does not exist.");
     }
 
     private async Task ValidateStepNumber(int? stepNumber, Guid recipeId)
