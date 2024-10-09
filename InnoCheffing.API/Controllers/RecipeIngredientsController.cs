@@ -58,6 +58,10 @@ public class RecipeIngredientsController(IRecipeIngredientRepository recipeIngre
 
             return CreatedAtAction(nameof(Get), new { recipeId = recipeIngredient.RecipeId, ingredientId = recipeIngredient.IngredientId }, dto);
         }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
         catch (ArgumentOutOfRangeException ex)
         {
             return BadRequest(ex.Message);
