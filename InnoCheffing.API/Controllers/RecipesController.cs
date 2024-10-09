@@ -1,6 +1,7 @@
 ﻿using InnoCheffing.API.Contracts;
 using InnoCheffing.API.Mappers;
 using InnoCheffing.Core.Entities.DataBase;
+using InnoCheffing.Core.Entities.Exceptions;
 using InnoCheffing.Core.Entities.Pagination;
 using InnoCheffing.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -67,6 +68,10 @@ public class RecipesController(IRecipeRepository recipeRepository) : ControllerB
 
             return CreatedAtAction(nameof(Get), new { id = recipe.Id }, dto);
         }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
         catch (ArgumentOutOfRangeException ex)
         {
             return BadRequest(ex.Message);
@@ -87,6 +92,10 @@ public class RecipesController(IRecipeRepository recipeRepository) : ControllerB
             bool recipeUpdated = await _recipeRepository.Update(id, recipe);
 
             return recipeUpdated ? NoContent() : NotFound();
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
         }
         catch (ArgumentOutOfRangeException ex)
         {

@@ -1,5 +1,6 @@
 ﻿using InnoCheffing.Core.Data;
 using InnoCheffing.Core.Entities.DataBase;
+using InnoCheffing.Core.Entities.Exceptions;
 using InnoCheffing.Core.Entities.Pagination;
 using InnoCheffing.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -72,6 +73,6 @@ public class RecipeRepository(InnoCheffingContext context) : Repository<Recipe>(
         bool isCategoryValid = await _context.RecipeCategories.AsNoTracking().AnyAsync(c => c.Id == recipeCategoryId);
 
         if (isCategoryValid == false)
-            throw new ArgumentOutOfRangeException(nameof(recipeCategoryId), "The recipe category id does not exist.");
+            throw new NotFoundException("The recipe category id does not exist.");
     }
 }
