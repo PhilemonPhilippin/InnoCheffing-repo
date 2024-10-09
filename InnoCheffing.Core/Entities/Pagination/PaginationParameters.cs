@@ -2,7 +2,7 @@
 
 public abstract class PaginationParameters
 {
-    public virtual int MaxPageSize { get; init; } = 50;
+    protected abstract int MaxPageSize { get; init; }
 
     private int _pageNumber = 1;
     public int PageNumber
